@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard Comercial - MED & ECOS | v2.5</title>
+  <title>Dashboard Comercial - MED & ECOS | v2.6</title>
   <style>
     * { box-sizing: border-box; font-family: Arial, sans-serif; }
     body { margin: 0; padding: 20px; background: #f4f6f9; color: #333; }
@@ -53,12 +53,11 @@
     <div class="header">
       <h1>Dashboard Comercial - MED & ECOS</h1>
       <p>Comparativo mensal entre 2025 e 2026 com salvamento em Firebase sem login.</p>
-      <span class="version">Versão 2.5</span>
+      <span class="version">Versão 2.6</span>
     </div>
 
     <div class="actions">
       <button onclick="calcularDashboard()">Atualizar Dashboard</button>
-      <button class="btn-secondary" onclick="resetarDadosFirebase()">Resetar Firebase com padrão MED 2025</button>
     </div>
 
     <div class="status-bar">
@@ -256,7 +255,19 @@
       med_c25_8: '8.302,92',
       med_c25_9: '11.795,20',
       med_c25_10: '12.577,45',
-      med_c25_11: '9.324,45'
+      med_c25_11: '9.324,45',
+      ecos_c25_0: '1.800,00',
+      ecos_c25_1: '4.352,68',
+      ecos_c25_2: '4.415,34',
+      ecos_c25_3: '2.095,42',
+      ecos_c25_4: '3.774,83',
+      ecos_c25_5: '4.452,77',
+      ecos_c25_6: '8.607,01',
+      ecos_c25_7: '8.326,79',
+      ecos_c25_8: '6.160,05',
+      ecos_c25_9: '4.789,13',
+      ecos_c25_10: '10.800,00',
+      ecos_c25_11: '4.707,50'
     };
 
     function agendarAutoSave() {
@@ -331,7 +342,7 @@
         formData[input.id] = input.value;
       });
       return {
-        versao: '2.5',
+        versao: '2.6',
         formData,
         marcaAtual,
         secoes: {
@@ -451,27 +462,7 @@
     }
     window.carregarFirebase = carregarFirebase;
 
-    async function resetarDadosFirebase() {
-      try {
-        preencherDadosIniciais();
-        document.getElementById('mesSelecionado').value = '0';
-        marcaAtual = 'MED';
-        document.querySelectorAll('.brand-tab').forEach(btn => btn.classList.remove('active'));
-        const botaoMed = Array.from(document.querySelectorAll('.brand-tab')).find(btn => btn.textContent.trim() === 'MED');
-        if (botaoMed) botaoMed.classList.add('active');
-        setSecaoAberta('secaoMED', 'headerSecaoMED', true);
-        setSecaoAberta('secaoECOS', 'headerSecaoECOS', false);
-        calcularDashboard();
-        const dados = coletarDadosFormulario();
-        await setDoc(doc(db, 'dashboard', 'med-ecos'), dados);
-        firebaseLoadedOnce = true;
-        setStatus('Firebase resetado com padrão MED 2025');
-      } catch (error) {
-        console.error(error);
-        setStatus('Erro ao resetar Firebase');
-      }
-    }
-    window.resetarDadosFirebase = resetarDadosFirebase;
+    
 
     function ativarEventosCampos() {
       document.querySelectorAll('input.valor').forEach(input => {
