@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Controle Integrado de Clientes</title>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --card: #ffffff;
+      --line: #d9e2ec;
+      --text: #1f2937;
+      --muted: #6b7280;
+      --primary: #1d4ed8;
+      --primary-soft: #dbeafe;
+      --success: #047857;
+      --success-soft: #d1fae5;
+      --warning: #b45309;
+      --warning-soft: #fef3c7;
+      --danger: #b91c1c;
+      --danger-soft: #fee2e2;
+      --dark: #0f172a;
+      --shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
+      --radius: 18px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Arial, Helvetica, sans-serif;
+      background: linear-gradient(180deg, #eef4ff 0%, var(--bg) 180px);
+      color: var(--text);
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 24px;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, var(--dark), #1e3a8a);
+      color: #fff;
+      border-radius: 24px;
+      padding: 28px;
+      box-shadow: var(--shadow);
+      margin-bottom: 22px;
+    }
+
+    .hero h1 {
+      margin: 0 0 10px;
+      font-size: 30px;
+    }
+
+    .hero p {
+      margin: 0;
+      color: rgba(255,255,255,0.88);
+      line-height: 1.6;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 18px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 18px;
+    }
+
+    .span-3 { grid-column: span 3; }
+    .span-4 { grid-column: span 4; }
+    .span-5 { grid-column: span 5; }
+    .span-6 { grid-column: span 6; }
+    .span-7 { grid-column: span 7; }
+    .span-8 { grid-column: span 8; }
+    .span-12 { grid-column: span 12; }
+
+    .kpi {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: 120px;
+      justify-content: center;
+    }
+
+    .kpi .label {
+      color: var(--muted);
+      font-size: 14px;
+      font-weight: bold;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+
+    .kpi .value {
+      font-size: 34px;
+      font-weight: bold;
+    }
+
+    .kpi .sub {
+      font-size: 14px;
+      color: var(--muted);
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+    }
+
+    .section-title h2,
+    .section-title h3 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .muted { color: var(--muted); }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    input, select, button, textarea {
+      font: inherit;
+      border-radius: 12px;
+      border: 1px solid var(--line);
+      padding: 12px 14px;
+      outline: none;
+      background: #fff;
+      width: 100%;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(29,78,216,.12);
+    }
+
+    button {
+      background: var(--primary);
+      color: #fff;
+      border: none;
+      cursor: pointer;
+      font-weight: bold;
+      transition: .2s ease;
+      width: auto;
+    }
+
+    button:hover { transform: translateY(-1px); }
+
+    .btn-secondary {
+      background: #e5e7eb;
+      color: var(--text);
+    }
+
+    .btn-success {
+      background: var(--success);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(12, 1fr);
+      gap: 12px;
+    }
+
+    .field-2 { grid-column: span 2; }
+    .field-3 { grid-column: span 3; }
+    .field-4 { grid-column: span 4; }
+    .field-6 { grid-column: span 6; }
+    .field-12 { grid-column: span 12; }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    .ouro { background: #fef3c7; color: #92400e; }
+    .prata { background: #e5e7eb; color: #374151; }
+    .bronze { background: #fde7d8; color: #9a3412; }
+
+    .status-ok { background: var(--success-soft); color: var(--success); }
+    .status-alerta { background: var(--warning-soft); color: var(--warning); }
+    .status-atrasado { background: var(--danger-soft); color: var(--danger); }
+    .status-info { background: var(--primary-soft); color: var(--primary); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 14px;
+    }
+
+    th, td {
+      text-align: left;
+      padding: 12px 10px;
+      border-bottom: 1px solid #edf2f7;
+      vertical-align: top;
+    }
+
+    th {
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .5px;
+    }
+
+    tr:hover td {
+      background: #fafcff;
+    }
+
+    .pipeline {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+    }
+
+    .stage {
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      padding: 14px;
+      background: #fbfdff;
+      min-height: 180px;
+    }
+
+    .stage h4 {
+      margin: 0 0 12px;
+      font-size: 16px;
+    }
+
+    .mini-card {
+      background: #fff;
+      border: 1px solid #e5e7eb;
+      border-radius: 14px;
+      padding: 10px;
+      margin-bottom: 10px;
+    }
+
+    .mini-card strong { display: block; margin-bottom: 6px; }
+
+    .checklist {
+      display: grid;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .check-item {
+      display: flex;
+      align-items: start;
+      gap: 10px;
+      padding: 10px 12px;
+      border: 1px solid #e5e7eb;
+      border-radius: 12px;
+      background: #fcfcfd;
+    }
+
+    .check-item input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      margin-top: 1px;
+    }
+
+    .panel-note {
+      background: #f8fafc;
+      border: 1px dashed #cbd5e1;
+      padding: 14px;
+      border-radius: 14px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .tag {
+      display: inline-block;
+      font-size: 12px;
+      padding: 5px 8px;
+      border-radius: 999px;
+      background: #eef2ff;
+      color: #4338ca;
+      margin: 2px 4px 0 0;
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--muted);
+      padding: 24px;
+    }
+
+    .small {
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    @media (max-width: 1100px) {
+      .span-3, .span-4, .span-5, .span-6, .span-7, .span-8, .span-12 { grid-column: span 12; }
+      .pipeline { grid-template-columns: 1fr 1fr; }
+      .field-2, .field-3, .field-4, .field-6, .field-12 { grid-column: span 12; }
+    }
+
+    @media (max-width: 700px) {
+      .container { padding: 14px; }
+      .hero h1 { font-size: 24px; }
+      .pipeline { grid-template-columns: 1fr; }
+      table { display: block; overflow-x: auto; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <h1>Controle Integrado do Ciclo do Cliente</h1>
+      <p>Modelo dinâmico para acompanhar Implantação, Capacitações e Pós-Vendas, com cadência automática por categoria, checklist do primeiro contato via WhatsApp e visão consolidada dos responsáveis por etapa.</p>
+    </section>
+
+    <section class="grid">
+      <div class="card span-3">
+        <div class="kpi">
+          <div class="label">Clientes Ativos</div>
+          <div class="value" id="kpiTotal">0</div>
+          <div class="sub">Base monitorada no ciclo completo</div>
+        </div>
+      </div>
+      <div class="card span-3">
+        <div class="kpi">
+          <div class="label">Próximos Contatos</div>
+          <div class="value" id="kpiHoje">0</div>
+          <div class="sub">Vencendo hoje ou em até 7 dias</div>
+        </div>
+      </div>
+      <div class="card span-3">
+        <div class="kpi">
+          <div class="label">Atrasados</div>
+          <div class="value" id="kpiAtrasados">0</div>
+          <div class="sub">Pós-vendas fora da cadência</div>
+        </div>
+      </div>
+      <div class="card span-3">
+        <div class="kpi">
+          <div class="label">Responsáveis</div>
+          <div class="value">3</div>
+          <div class="sub">Marcelo, Lélia e Rafaela</div>
+        </div>
+      </div>
+
+      <div class="card span-8">
+        <div class="section-title">
+          <h2>Novo cliente / novo acompanhamento</h2>
+          <span class="muted">Cadência automática por categoria</span>
+        </div>
+
+        <div class="form-grid">
+          <div class="field-4"><input id="empresa" placeholder="Nome da empresa / cliente" /></div>
+          <div class="field-3"><input id="contato" placeholder="Nome do contato principal" /></div>
+          <div class="field-2"><input id="whats" placeholder="WhatsApp" /></div>
+          <div class="field-3">
+            <select id="categoria">
+              <option value="Ouro">Categoria: Ouro</option>
+              <option value="Prata">Categoria: Prata</option>
+              <option value="Bronze">Categoria: Bronze</option>
+            </select>
+          </div>
+
+          <div class="field-3"><input id="inicioImplantacao" type="date" /></div>
+          <div class="field-3"><input id="dataCapacitacao" type="date" /></div>
+          <div class="field-3"><input id="ultimoContato" type="date" /></div>
+          <div class="field-3">
+            <select id="etapaAtual">
+              <option value="Implantação">Etapa atual: Implantação</option>
+              <option value="Capacitação">Etapa atual: Capacitação</option>
+              <option value="Pós-Vendas">Etapa atual: Pós-Vendas</option>
+              <option value="Concluído">Etapa atual: Concluído</option>
+            </select>
+          </div>
+
+          <div class="field-12"><textarea id="observacoes" rows="3" placeholder="Observações gerais, pendências, necessidades do cliente, histórico rápido..."></textarea></div>
+          <div class="field-12 actions">
+            <button onclick="adicionarCliente()">Adicionar cliente</button>
+            <button class="btn-secondary" onclick="carregarExemplo()">Carregar exemplo</button>
+            <button class="btn-secondary" onclick="limparFormulario()">Limpar</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="card span-4">
+        <div class="section-title">
+          <h3>Responsáveis por etapa</h3>
+        </div>
+        <div class="checklist">
+          <div class="check-item"><div>🛠️</div><div><strong>Marcelo</strong><div class="small">Responsável por Implantação</div></div></div>
+          <div class="check-item"><div>📚</div><div><strong>Lélia</strong><div class="small">Responsável por Agendamento de Capacitações</div></div></div>
+          <div class="check-item"><div>🤝</div><div><strong>Rafaela</strong><div class="small">Responsável por Pós-Vendas</div></div></div>
+        </div>
+        <div class="panel-note" style="margin-top:14px;">
+          Sugestão de uso: cada cliente entra no fluxo desde a implantação, passa por capacitação e segue em pós-vendas recorrente conforme a categoria.
+        </div>
+      </div>
+
+      <div class="card span-12">
+        <div class="section-title">
+          <h2>Visão do fluxo</h2>
+          <span class="muted">Acompanhamento macro por etapa</span>
+        </div>
+        <div class="pipeline" id="pipeline"></div>
+      </div>
+
+      <div class="card span-7">
+        <div class="section-title">
+          <h2>Carteira de clientes</h2>
+          <div class="toolbar" style="margin:0;">
+            <input id="busca" placeholder="Buscar por empresa, contato ou categoria" oninput="renderizarTudo()" />
+          </div>
+        </div>
+        <div style="overflow-x:auto;">
+          <table>
+            <thead>
+              <tr>
+                <th>Cliente</th>
+                <th>Categoria</th>
+                <th>Etapa</th>
+                <th>Responsável</th>
+                <th>Próx. contato</th>
+                <th>Status</th>
+                <th>Ações</th>
+              </tr>
+            </thead>
+            <tbody id="tabelaClientes"></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card span-5">
+        <div class="section-title">
+          <h2>Primeiro contato de Pós-Vendas</h2>
+          <span class="muted">Checklist via WhatsApp</span>
+        </div>
+        <div class="checklist" id="checklistPadrao">
+          <label class="check-item"><input type="checkbox" checked disabled><div><strong>Apresentação da responsável pelo Pós-Vendas</strong><div class="small">Mensagem inicial com nome e função</div></div></label>
+          <label class="check-item"><input type="checkbox" checked disabled><div><strong>Código VIP</strong><div class="small">Envio do código de identificação/benefício</div></div></label>
+          <label class="check-item"><input type="checkbox" checked disabled><div><strong>Contatos dos demais setores</strong><div class="small">Canais para suporte e atendimento</div></div></label>
+          <label class="check-item"><input type="checkbox" checked disabled><div><strong>Orientações sobre boletos futuros</strong><div class="small">Prazos e formato de recebimento</div></div></label>
+          <label class="check-item"><input type="checkbox" checked disabled><div><strong>Instruções de acesso ao Espaço VIP</strong><div class="small">Passo a passo para acesso</div></div></label>
+        </div>
+        <div class="panel-note" style="margin-top:14px;">
+          Idealmente, após o primeiro contato, o sistema já registra a data e calcula automaticamente o próximo follow-up conforme Ouro, Prata ou Bronze.
+        </div>
+      </div>
+
+      <div class="card span-12">
+        <div class="section-title">
+          <h2>Mensagem base de WhatsApp</h2>
+          <span class="muted">Modelo rápido para copiar</span>
+        </div>
+        <div class="panel-note" id="modeloMensagem">
+          Olá, tudo bem? Aqui é a Rafaela, responsável pelo Pós-Vendas. Estou entrando em contato para me apresentar e compartilhar algumas informações importantes: seu Código VIP, os contatos dos demais setores para suporte, orientações sobre boletos futuros e também o passo a passo para acesso ao Espaço VIP. Sempre que precisar, estaremos à disposição.
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <script>
+    const STORAGE_KEY = 'controleCicloClientes_v1';
+
+    let clientes = JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]');
+
+    const responsavelPorEtapa = {
+      'Implantação': 'Marcelo',
+      'Capacitação': 'Lélia',
+      'Pós-Vendas': 'Rafaela',
+      'Concluído': 'Rafaela'
+    };
+
+    function diasCategoria(categoria) {
+      if (categoria === 'Ouro') return 30;
+      if (categoria === 'Prata') return 45;
+      return 90;
+    }
+
+    function formatarData(data) {
+      if (!data) return '-';
+      const [ano, mes, dia] = data.split('-');
+      return `${dia}/${mes}/${ano}`;
+    }
+
+    function hojeISO() {
+      const hoje = new Date();
+      hoje.setMinutes(hoje.getMinutes() - hoje.getTimezoneOffset());
+      return hoje.toISOString().split('T')[0];
+    }
+
+    function adicionarDias(dataISO, dias) {
+      if (!dataISO) return '';
+      const data = new Date(dataISO + 'T12:00:00');
+      data.setDate(data.getDate() + dias);
+      const ano = data.getFullYear();
+      const mes = String(data.getMonth() + 1).padStart(2, '0');
+      const dia = String(data.getDate()).padStart(2, '0');
+      return `${ano}-${mes}-${dia}`;
+    }
+
+    function classCategoria(cat) {
+      return cat === 'Ouro' ? 'ouro' : cat === 'Prata' ? 'prata' : 'bronze';
+    }
+
+    function calcularProximoContato(cliente) {
+      if (cliente.etapaAtual !== 'Pós-Vendas' && cliente.etapaAtual !== 'Concluído') return '';
+      const base = cliente.ultimoContato || hojeISO();
+      return adicionarDias(base, diasCategoria(cliente.categoria));
+    }
+
+    function calcularStatus(cliente) {
+      const prox = calcularProximoContato(cliente);
+      if (!prox) return { texto: 'Em andamento', classe: 'status-info' };
+
+      const hoje = new Date(hojeISO() + 'T00:00:00');
+      const proxima = new Date(prox + 'T00:00:00');
+      const diff = Math.ceil((proxima - hoje) / (1000 * 60 * 60 * 24));
+
+      if (diff < 0) return { texto: 'Atrasado', classe: 'status-atrasado' };
+      if (diff <= 7) return { texto: 'Próximo', classe: 'status-alerta' };
+      return { texto: 'Em dia', classe: 'status-ok' };
+    }
+
+    function limparFormulario() {
+      document.getElementById('empresa').value = '';
+      document.getElementById('contato').value = '';
+      document.getElementById('whats').value = '';
+      document.getElementById('categoria').value = 'Ouro';
+      document.getElementById('inicioImplantacao').value = '';
+      document.getElementById('dataCapacitacao').value = '';
+      document.getElementById('ultimoContato').value = '';
+      document.getElementById('etapaAtual').value = 'Implantação';
+      document.getElementById('observacoes').value = '';
+    }
+
+    function adicionarCliente() {
+      const empresa = document.getElementById('empresa').value.trim();
+      const contato = document.getElementById('contato').value.trim();
+      const whats = document.getElementById('whats').value.trim();
+      const categoria = document.getElementById('categoria').value;
+      const inicioImplantacao = document.getElementById('inicioImplantacao').value;
+      const dataCapacitacao = document.getElementById('dataCapacitacao').value;
+      const ultimoContato = document.getElementById('ultimoContato').value;
+      const etapaAtual = document.getElementById('etapaAtual').value;
+      const observacoes = document.getElementById('observacoes').value.trim();
+
+      if (!empresa) {
+        alert('Preencha pelo menos o nome da empresa/cliente.');
+        return;
+      }
+
+      clientes.unshift({
+        id: Date.now(),
+        empresa,
+        contato,
+        whats,
+        categoria,
+        inicioImplantacao,
+        dataCapacitacao,
+        ultimoContato,
+        etapaAtual,
+        observacoes,
+        primeiroContatoRealizado: !!ultimoContato
+      });
+
+      salvar();
+      limparFormulario();
+      renderizarTudo();
+    }
+
+    function excluirCliente(id) {
+      if (!confirm('Deseja excluir este cliente do controle?')) return;
+      clientes = clientes.filter(c => c.id !== id);
+      salvar();
+      renderizarTudo();
+    }
+
+    function registrarContato(id) {
+      clientes = clientes.map(c => c.id === id ? { ...c, ultimoContato: hojeISO(), etapaAtual: 'Pós-Vendas', primeiroContatoRealizado: true } : c);
+      salvar();
+      renderizarTudo();
+    }
+
+    function avancarEtapa(id) {
+      clientes = clientes.map(c => {
+        if (c.id !== id) return c;
+        let novaEtapa = c.etapaAtual;
+        if (c.etapaAtual === 'Implantação') novaEtapa = 'Capacitação';
+        else if (c.etapaAtual === 'Capacitação') novaEtapa = 'Pós-Vendas';
+        else if (c.etapaAtual === 'Pós-Vendas') novaEtapa = 'Concluído';
+        return { ...c, etapaAtual: novaEtapa };
+      });
+      salvar();
+      renderizarTudo();
+    }
+
+    function salvar() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(clientes));
+    }
+
+    function clientesFiltrados() {
+      const termo = document.getElementById('busca').value.trim().toLowerCase();
+      if (!termo) return clientes;
+      return clientes.filter(c =>
+        (c.empresa || '').toLowerCase().includes(termo) ||
+        (c.contato || '').toLowerCase().includes(termo) ||
+        (c.categoria || '').toLowerCase().includes(termo) ||
+        (c.etapaAtual || '').toLowerCase().includes(termo)
+      );
+    }
+
+    function renderTabela() {
+      const tbody = document.getElementById('tabelaClientes');
+      const dados = clientesFiltrados();
+
+      if (!dados.length) {
+        tbody.innerHTML = `<tr><td colspan="7" class="empty">Nenhum cliente cadastrado ainda.</td></tr>`;
+        return;
+      }
+
+      tbody.innerHTML = dados.map(cliente => {
+        const prox = calcularProximoContato(cliente);
+        const status = calcularStatus(cliente);
+        return `
+          <tr>
+            <td>
+              <strong>${cliente.empresa}</strong><br>
+              <span class="small">${cliente.contato || 'Sem contato principal'} ${cliente.whats ? '• ' + cliente.whats : ''}</span>
+            </td>
+            <td><span class="badge ${classCategoria(cliente.categoria)}">${cliente.categoria}</span></td>
+            <td>
+              <strong>${cliente.etapaAtual}</strong><br>
+              <span class="small">${cliente.observacoes ? cliente.observacoes.substring(0, 45) + (cliente.observacoes.length > 45 ? '...' : '') : 'Sem observações'}</span>
+            </td>
+            <td>${responsavelPorEtapa[cliente.etapaAtual]}</td>
+            <td>${prox ? formatarData(prox) : '-'}</td>
+            <td><span class="badge ${status.classe}">${status.texto}</span></td>
+            <td>
+              <div class="actions">
+                <button class="btn-success" onclick="registrarContato(${cliente.id})">Registrar contato</button>
+                <button class="btn-secondary" onclick="avancarEtapa(${cliente.id})">Avançar</button>
+                <button class="btn-secondary" onclick="excluirCliente(${cliente.id})">Excluir</button>
+              </div>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function renderKPIs() {
+      const total = clientes.length;
+      let proximos = 0;
+      let atrasados = 0;
+
+      clientes.forEach(cliente => {
+        const prox = calcularProximoContato(cliente);
+        if (!prox) return;
+
+        const hoje = new Date(hojeISO() + 'T00:00:00');
+        const proxima = new Date(prox + 'T00:00:00');
+        const diff = Math.ceil((proxima - hoje) / (1000 * 60 * 60 * 24));
+
+        if (diff <= 7) proximos++;
+        if (diff < 0) atrasados++;
+      });
+
+      document.getElementById('kpiTotal').textContent = total;
+      document.getElementById('kpiHoje').textContent = proximos;
+      document.getElementById('kpiAtrasados').textContent = atrasados;
+    }
+
+    function renderPipeline() {
+      const etapas = ['Implantação', 'Capacitação', 'Pós-Vendas', 'Concluído'];
+      const wrap = document.getElementById('pipeline');
+
+      wrap.innerHTML = etapas.map(etapa => {
+        const lista = clientesFiltrados().filter(c => c.etapaAtual === etapa);
+        return `
+          <div class="stage">
+            <h4>${etapa} <span class="small">(${lista.length})</span></h4>
+            ${lista.length ? lista.map(cliente => {
+              const prox = calcularProximoContato(cliente);
+              const status = calcularStatus(cliente);
+              return `
+                <div class="mini-card">
+                  <strong>${cliente.empresa}</strong>
+                  <div class="small">Responsável: ${responsavelPorEtapa[cliente.etapaAtual]}</div>
+                  <div class="small">Categoria: ${cliente.categoria}</div>
+                  ${prox ? `<div class="small">Próx. contato: ${formatarData(prox)}</div>` : ''}
+                  <div style="margin-top:6px;"><span class="badge ${status.classe}">${status.texto}</span></div>
+                </div>
+              `;
+            }).join('') : '<div class="empty">Sem clientes nesta etapa.</div>'}
+          </div>
+        `;
+      }).join('');
+    }
+
+    function carregarExemplo() {
+      clientes = [
+        {
+          id: 1,
+          empresa: 'Alpha Contábil',
+          contato: 'João Henrique',
+          whats: '(11) 99999-1111',
+          categoria: 'Ouro',
+          inicioImplantacao: '2026-03-10',
+          dataCapacitacao: '2026-03-18',
+          ultimoContato: '2026-03-20',
+          etapaAtual: 'Pós-Vendas',
+          observacoes: 'Cliente com boa adesão. Solicitar retorno sobre Espaço VIP.',
+          primeiroContatoRealizado: true
+        },
+        {
+          id: 2,
+          empresa: 'Beta Engenharia',
+          contato: 'Camila Souza',
+          whats: '(11) 98888-2222',
+          categoria: 'Prata',
+          inicioImplantacao: '2026-03-25',
+          dataCapacitacao: '2026-04-03',
+          ultimoContato: '',
+          etapaAtual: 'Capacitação',
+          observacoes: 'Aguardando confirmação da agenda de treinamento.',
+          primeiroContatoRealizado: false
+        },
+        {
+          id: 3,
+          empresa: 'Gamma Transportes',
+          contato: 'Mariana Lopes',
+          whats: '(11) 97777-3333',
+          categoria: 'Bronze',
+          inicioImplantacao: '2026-02-01',
+          dataCapacitacao: '2026-02-12',
+          ultimoContato: '2025-12-15',
+          etapaAtual: 'Pós-Vendas',
+          observacoes: 'Necessita reforço sobre boletos e suporte.',
+          primeiroContatoRealizado: true
+        },
+        {
+          id: 4,
+          empresa: 'Delta Clínica',
+          contato: 'Rafael Gomes',
+          whats: '(11) 96666-4444',
+          categoria: 'Ouro',
+          inicioImplantacao: '2026-03-28',
+          dataCapacitacao: '',
+          ultimoContato: '',
+          etapaAtual: 'Implantação',
+          observacoes: 'Implantação iniciada esta semana.',
+          primeiroContatoRealizado: false
+        }
+      ];
+      salvar();
+      renderizarTudo();
+    }
+
+    function renderizarTudo() {
+      renderKPIs();
+      renderTabela();
+      renderPipeline();
+    }
+
+    renderizarTudo();
+  </script>
+</body>
+</html>
