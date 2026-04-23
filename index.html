@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard Comercial - MED & ECOS | v2.0</title>
+  <title>Dashboard Comercial - MED & ECOS | v2.2</title>
   <style>
     * { box-sizing: border-box; font-family: Arial, sans-serif; }
     body { margin: 0; padding: 20px; background: #f4f6f9; color: #333; }
@@ -53,14 +53,13 @@
     <div class="header">
       <h1>Dashboard Comercial - MED & ECOS</h1>
       <p>Comparativo mensal entre 2025 e 2026 com salvamento em Firebase sem login.</p>
-      <span class="version">Versão 2.0</span>
+      <span class="version">Versão 2.2</span>
     </div>
 
     <div class="section">
       <h2>Firebase</h2>
-      <p class="small">Esta versão usa Firestore sem login. Os dados são salvos em <strong>dashboard/med-ecos</strong>.</p>
+      <p class="small">Esta versão usa Firestore sem login. Os dados são salvos em <strong>dashboard/med-ecos</strong> com auto salvamento.</p>
       <div class="actions">
-        <button type="button" onclick="salvarFirebase()">Salvar no Firebase</button>
         <button type="button" class="btn-secondary" onclick="carregarFirebase()">Carregar do Firebase</button>
       </div>
       <div class="muted-box" id="firebaseStatus">Pronto para salvar e carregar.</div>
@@ -250,6 +249,18 @@
       document.getElementById('firebaseStatus').textContent = msg;
     }
 
+    let autoSaveTimer = null;
+    let firebaseLoadedOnce = false;
+
+    function agendarAutoSave() {
+      if (!firebaseLoadedOnce) return;
+      clearTimeout(autoSaveTimer);
+      setStatus('Alterações pendentes...');
+      autoSaveTimer = setTimeout(() => {
+        salvarFirebase(true);
+      }, 1200);
+    }
+
     function setSecaoAberta(id, headerId, aberta) {
       const el = document.getElementById(id);
       const header = document.getElementById(headerId);
@@ -263,6 +274,7 @@
       const aberta = !el.classList.contains('open');
       el.classList.toggle('open', aberta);
       header.classList.toggle('open', aberta);
+      agendarAutoSave();
     }
     window.toggleSecao = toggleSecao;
 
@@ -312,7 +324,7 @@
         formData[input.id] = input.value;
       });
       return {
-        versao: '2.0',
+        versao: '2.2',
         formData,
         marcaAtual,
         secoes: {
@@ -350,6 +362,7 @@
         setSecaoAberta('secaoMED', 'headerSecaoMED', false);
       }
       calcularDashboard();
+      agendarAutoSave();
     }
     window.selecionarMarca = selecionarMarca;
 
@@ -390,11 +403,15 @@
     }
     window.calcularDashboard = calcularDashboard;
 
-    async function salvarFirebase() {
+    async function salvarFirebase(silencioso = false) {
       try {
         const dados = coletarDadosFormulario();
         await setDoc(doc(db, 'dashboard', 'med-ecos'), dados);
-        setStatus('Salvo no Firebase');
+        if (!silencioso) {
+          setStatus('Salvo no Firebase');
+        } else {
+          setStatus('Salvo automaticamente');
+        }
       } catch (error) {
         console.error(error);
         setStatus('Erro ao salvar no Firebase');
@@ -407,12 +424,15 @@
         const snap = await getDoc(doc(db, 'dashboard', 'med-ecos'));
         if (snap.exists()) {
           aplicarDadosFormulario(snap.data());
+          firebaseLoadedOnce = true;
           setStatus('Dados carregados do Firebase');
         } else {
+          firebaseLoadedOnce = true;
           setStatus('Nenhum dado salvo no Firebase');
         }
       } catch (error) {
         console.error(error);
+        firebaseLoadedOnce = true;
         setStatus('Erro ao carregar do Firebase');
       }
     }
@@ -423,14 +443,38 @@
         input.addEventListener('input', (e) => {
           formatarCampoMoeda(e.target);
           calcularDashboard();
+          agendarAutoSave();
         });
-        input.addEventListener('blur', (e) => formatarCampoMoeda(e.target));
+        input.addEventListener('blur', (e) => {
+          formatarCampoMoeda(e.target);
+          calcularDashboard();
+          agendarAutoSave();
+        });
       });
-      document.getElementById('mesSelecionado').addEventListener('change', calcularDashboard);
+      document.getElementById('mesSelecionado').addEventListener('change', () => {
+        calcularDashboard();
+        agendarAutoSave();
+      });
+    }
+
+    function preencherDadosIniciais() {
+      const cancelamentosMed2025 = [
+        '8.388,78', '14.521,65', '5.923,47', '6.952,96',
+        '11.365,47', '6.861,42', '12.172,26', '9.403,44',
+        '8.302,92', '11.795,20', '12.577,45', '9.324,45'
+      ];
+
+      cancelamentosMed2025.forEach((valor, index) => {
+        const campo = document.getElementById(`med_c25_${index}`);
+        if (campo && !campo.value) {
+          campo.value = valor;
+        }
+      });
     }
 
     criarTabela('tabelaMED', 'med');
     criarTabela('tabelaECOS', 'ecos');
+    preencherDadosIniciais();
     setSecaoAberta('secaoMED', 'headerSecaoMED', false);
     setSecaoAberta('secaoECOS', 'headerSecaoECOS', false);
     ativarEventosCampos();
