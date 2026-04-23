@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard Comercial - MED & ECOS | v2.2</title>
+  <title>Dashboard Comercial - MED & ECOS | v2.3</title>
   <style>
     * { box-sizing: border-box; font-family: Arial, sans-serif; }
     body { margin: 0; padding: 20px; background: #f4f6f9; color: #333; }
@@ -53,16 +53,7 @@
     <div class="header">
       <h1>Dashboard Comercial - MED & ECOS</h1>
       <p>Comparativo mensal entre 2025 e 2026 com salvamento em Firebase sem login.</p>
-      <span class="version">Versão 2.2</span>
-    </div>
-
-    <div class="section">
-      <h2>Firebase</h2>
-      <p class="small">Esta versão usa Firestore sem login. Os dados são salvos em <strong>dashboard/med-ecos</strong> com auto salvamento.</p>
-      <div class="actions">
-        <button type="button" class="btn-secondary" onclick="carregarFirebase()">Carregar do Firebase</button>
-      </div>
-      <div class="muted-box" id="firebaseStatus">Pronto para salvar e carregar.</div>
+      <span class="version">Versão 2.3</span>
     </div>
 
     <div class="actions">
@@ -252,6 +243,21 @@
     let autoSaveTimer = null;
     let firebaseLoadedOnce = false;
 
+    const dadosPadrao = {
+      med_c25_0: '8.388,78',
+      med_c25_1: '14.521,65',
+      med_c25_2: '5.923,47',
+      med_c25_3: '6.952,96',
+      med_c25_4: '11.365,47',
+      med_c25_5: '6.861,42',
+      med_c25_6: '12.172,26',
+      med_c25_7: '9.403,44',
+      med_c25_8: '8.302,92',
+      med_c25_9: '11.795,20',
+      med_c25_10: '12.577,45',
+      med_c25_11: '9.324,45'
+    };
+
     function agendarAutoSave() {
       if (!firebaseLoadedOnce) return;
       clearTimeout(autoSaveTimer);
@@ -324,7 +330,7 @@
         formData[input.id] = input.value;
       });
       return {
-        versao: '2.2',
+        versao: '2.3',
         formData,
         marcaAtual,
         secoes: {
