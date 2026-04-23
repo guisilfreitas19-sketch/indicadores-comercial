@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard Comercial - MED & ECOS | v2.6</title>
+  <title>Dashboard Comercial - MED & ECOS | v2.8</title>
   <style>
     * { box-sizing: border-box; font-family: Arial, sans-serif; }
     body { margin: 0; padding: 20px; background: #f4f6f9; color: #333; }
@@ -24,6 +24,13 @@
     th { background: #1f3c88; color: white; }
     input[type="text"], select { padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; }
     input.valor { width: 120px; text-align: right; font-variant-numeric: tabular-nums; }
+    input.travado-2025 {
+      background: #f1f5f9;
+      color: #475569;
+      border-color: #cbd5e1;
+      cursor: not-allowed;
+      font-weight: 700;
+    }
     .positivo { color: #15803d; font-weight: bold; }
     .negativo { color: #b91c1c; font-weight: bold; }
     .neutro { color: #555; font-weight: bold; }
@@ -53,7 +60,7 @@
     <div class="header">
       <h1>Dashboard Comercial - MED & ECOS</h1>
       <p>Comparativo mensal entre 2025 e 2026 com salvamento em Firebase sem login.</p>
-      <span class="version">Versão 2.6</span>
+      <span class="version">Versão 2.8</span>
     </div>
 
     <div class="actions">
@@ -78,6 +85,7 @@
     <div class="section">
       <h2>Visão Mensal</h2>
       <p class="small">O dashboard compara o mês selecionado e o acumulado até esse mês.</p>
+      <p class="small"><strong>2025 travado:</strong> os dados-base de 2025 ficam bloqueados para evitar edição acidental.</p>
       <div class="actions">
         <label for="mesSelecionado"><strong>Escolha o mês:</strong></label>
         <select id="mesSelecionado" onchange="calcularDashboard()">
@@ -244,30 +252,25 @@
     let firebaseLoadedOnce = false;
 
     const dadosPadrao = {
-      med_c25_0: '8.388,78',
-      med_c25_1: '14.521,65',
-      med_c25_2: '5.923,47',
-      med_c25_3: '6.952,96',
-      med_c25_4: '11.365,47',
-      med_c25_5: '6.861,42',
-      med_c25_6: '12.172,26',
-      med_c25_7: '9.403,44',
-      med_c25_8: '8.302,92',
-      med_c25_9: '11.795,20',
-      med_c25_10: '12.577,45',
-      med_c25_11: '9.324,45',
-      ecos_c25_0: '1.800,00',
-      ecos_c25_1: '4.352,68',
-      ecos_c25_2: '4.415,34',
-      ecos_c25_3: '2.095,42',
-      ecos_c25_4: '3.774,83',
-      ecos_c25_5: '4.452,77',
-      ecos_c25_6: '8.607,01',
-      ecos_c25_7: '8.326,79',
-      ecos_c25_8: '6.160,05',
-      ecos_c25_9: '4.789,13',
-      ecos_c25_10: '10.800,00',
-      ecos_c25_11: '4.707,50'
+      // CANCELAMENTOS MED 2025
+      med_c25_0: '8.388,78', med_c25_1: '14.521,65', med_c25_2: '5.923,47', med_c25_3: '6.952,96',
+      med_c25_4: '11.365,47', med_c25_5: '6.861,42', med_c25_6: '12.172,26', med_c25_7: '9.403,44',
+      med_c25_8: '8.302,92', med_c25_9: '11.795,20', med_c25_10: '12.577,45', med_c25_11: '9.324,45',
+
+      // CANCELAMENTOS ECOS 2025
+      ecos_c25_0: '1.800,00', ecos_c25_1: '4.352,68', ecos_c25_2: '4.415,34', ecos_c25_3: '2.095,42',
+      ecos_c25_4: '3.774,83', ecos_c25_5: '4.452,77', ecos_c25_6: '8.607,01', ecos_c25_7: '8.326,79',
+      ecos_c25_8: '6.160,05', ecos_c25_9: '4.789,13', ecos_c25_10: '10.800,00', ecos_c25_11: '4.707,50',
+
+      // VENDAS ECOS 2025
+      ecos_v25_0: '10.887,50', ecos_v25_1: '43.000,00', ecos_v25_2: '7.425,00', ecos_v25_3: '9.750,00',
+      ecos_v25_4: '7.285,00', ecos_v25_5: '2.920,00', ecos_v25_6: '10.380,00', ecos_v25_7: '9.300,00',
+      ecos_v25_8: '7.080,00', ecos_v25_9: '5.716,86', ecos_v25_10: '3.400,00', ecos_v25_11: '1.500,00',
+
+      // VENDAS MED 2025
+      med_v25_0: '7.698,73', med_v25_1: '7.384,10', med_v25_2: '7.319,21', med_v25_3: '6.889,70',
+      med_v25_4: '6.787,88', med_v25_5: '6.555,33', med_v25_6: '6.120,57', med_v25_7: '7.382,24',
+      med_v25_8: '7.722,42', med_v25_9: '9.290,00', med_v25_10: '7.539,89', med_v25_11: '1.630,00'
     };
 
     function agendarAutoSave() {
@@ -303,9 +306,9 @@
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>${mes}</td>
-          <td><input class="valor" type="text" inputmode="numeric" id="${prefixo}_v25_${i}" placeholder="0,00"></td>
+          <td><input class="valor travado-2025" type="text" inputmode="numeric" id="${prefixo}_v25_${i}" placeholder="0,00" readonly></td>
           <td><input class="valor" type="text" inputmode="numeric" id="${prefixo}_v26_${i}" placeholder="0,00"></td>
-          <td><input class="valor" type="text" inputmode="numeric" id="${prefixo}_c25_${i}" placeholder="0,00"></td>
+          <td><input class="valor travado-2025" type="text" inputmode="numeric" id="${prefixo}_c25_${i}" placeholder="0,00" readonly></td>
           <td><input class="valor" type="text" inputmode="numeric" id="${prefixo}_c26_${i}" placeholder="0,00"></td>
           <td id="${prefixo}_pv_${i}">0,00%</td>
           <td id="${prefixo}_pc_${i}">0,00%</td>
@@ -342,7 +345,7 @@
         formData[input.id] = input.value;
       });
       return {
-        versao: '2.6',
+        versao: '2.8',
         formData,
         marcaAtual,
         secoes: {
@@ -465,7 +468,7 @@
     
 
     function ativarEventosCampos() {
-      document.querySelectorAll('input.valor').forEach(input => {
+      document.querySelectorAll('input.valor:not(.travado-2025)').forEach(input => {
         input.addEventListener('input', (e) => {
           formatarCampoMoeda(e.target);
           calcularDashboard();
