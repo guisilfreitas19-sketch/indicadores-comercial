@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard Comercial - MED & ECOS | v2.3</title>
+  <title>Dashboard Comercial - MED & ECOS | v2.4</title>
   <style>
     * { box-sizing: border-box; font-family: Arial, sans-serif; }
     body { margin: 0; padding: 20px; background: #f4f6f9; color: #333; }
@@ -53,7 +53,7 @@
     <div class="header">
       <h1>Dashboard Comercial - MED & ECOS</h1>
       <p>Comparativo mensal entre 2025 e 2026 com salvamento em Firebase sem login.</p>
-      <span class="version">Versão 2.3</span>
+      <span class="version">Versão 2.4</span>
     </div>
 
     <div class="actions">
@@ -236,8 +236,8 @@
     }
 
     function setStatus(msg) {
-      document.getElementById('statusSalvamento').textContent = msg;
-      document.getElementById('firebaseStatus').textContent = msg;
+      const statusEl = document.getElementById('statusSalvamento');
+      if (statusEl) statusEl.textContent = msg;
     }
 
     let autoSaveTimer = null;
@@ -330,7 +330,7 @@
         formData[input.id] = input.value;
       });
       return {
-        versao: '2.3',
+        versao: '2.4',
         formData,
         marcaAtual,
         secoes: {
@@ -343,7 +343,8 @@
     function aplicarDadosFormulario(payload) {
       if (!payload) return;
       const { formData = {}, marcaAtual: marcaSalva = 'MED', secoes = {} } = payload;
-      Object.entries(formData).forEach(([id, value]) => {
+      const dadosComPadrao = { ...dadosPadrao, ...formData };
+      Object.entries(dadosComPadrao).forEach(([id, value]) => {
         const el = document.getElementById(id);
         if (el) el.value = value;
       });
@@ -433,13 +434,18 @@
           firebaseLoadedOnce = true;
           setStatus('Dados carregados do Firebase');
         } else {
+          preencherDadosIniciais();
           firebaseLoadedOnce = true;
-          setStatus('Nenhum dado salvo no Firebase');
+          calcularDashboard();
+          setStatus('Dados padrão carregados');
+          agendarAutoSave();
         }
       } catch (error) {
         console.error(error);
+        preencherDadosIniciais();
         firebaseLoadedOnce = true;
-        setStatus('Erro ao carregar do Firebase');
+        calcularDashboard();
+        setStatus('Modo padrão carregado');
       }
     }
     window.carregarFirebase = carregarFirebase;
