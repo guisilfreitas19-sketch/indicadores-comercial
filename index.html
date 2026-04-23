@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PACS v2.8 | BI Dashboard</title>
+  <title>PACS v2.9 | BI Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
@@ -15,38 +15,38 @@
     body { margin: 0; padding: 20px; background-color: var(--bg); color: var(--text); }
     .container { max-width: 1600px; margin: 0 auto; }
     
-    /* Header & Controls */
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
     .header-info h1 { margin: 0; font-size: 28px; font-weight: 800; }
     #statusBadge { padding: 4px 12px; border-radius: 20px; font-size: 12px; margin-left: 10px; text-transform: uppercase; color: white; font-weight: 800; }
+    
     .brand-selector { background: #e9edf7; padding: 5px; border-radius: 12px; display: flex; gap: 5px; }
     .brand-btn { padding: 8px 20px; border: none; border-radius: 10px; cursor: pointer; font-weight: 700; color: var(--primary); background: transparent; transition: 0.3s; }
     .brand-btn.active { background: #fff; box-shadow: 0px 4px 14px rgba(0,0,0,0.05); }
     select { padding: 10px; border-radius: 12px; border: 1px solid var(--border); font-weight: 700; cursor: pointer; }
 
-    /* Stats Grid */
     .grid-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 25px; }
     .card-stat { background: var(--card); padding: 20px; border-radius: 20px; box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.12); border: 2px solid transparent; }
-    .card-stat .value { font-size: 26px; font-weight: 800; }
-    .variation { font-size: 14px; font-weight: 800; margin-top: 5px; }
+    .card-stat .value { font-size: 26px; font-weight: 800; margin: 5px 0; }
+    .variation { font-size: 14px; font-weight: 800; }
+    
     .alerta-churn { border-color: var(--bad) !important; animation: pulse 2s infinite; }
     @keyframes pulse { 0%, 100% { background: #fff; } 50% { background: #fff5f5; } }
 
-    /* Charts Area */
-    .charts-container { display: grid; grid-template-columns: 2fr 1fr; gap: 20px; margin-bottom: 25px; }
-    .chart-card { background: var(--card); padding: 20px; border-radius: 20px; box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.08); height: 320px; }
+    .charts-container { display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px; margin-bottom: 25px; }
+    .chart-card { background: var(--card); padding: 20px; border-radius: 20px; box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.08); height: 350px; }
     .chart-card h3 { margin: 0 0 15px 0; font-size: 14px; color: var(--muted); text-transform: uppercase; }
 
-    /* Table */
     .collapsible-section { background: var(--card); border-radius: 20px; box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.08); }
     .trigger { padding: 20px; display: flex; justify-content: space-between; cursor: pointer; align-items: center; }
-    .content { display: none; padding: 0 20px 20px; }
+    .content { display: none; padding: 0 20px 20px; overflow-x: auto; }
     .active .content { display: block; }
-    table { width: 100%; border-collapse: collapse; }
+    
+    table { width: 100%; border-collapse: collapse; min-width: 800px; }
     th { padding: 12px; color: var(--muted); font-size: 11px; text-transform: uppercase; border-bottom: 1px solid var(--border); }
-    td { padding: 8px; border-bottom: 1px solid var(--border); text-align: center; font-weight: 600; font-size: 14px; }
-    input.valor { width: 110px; padding: 6px; border: 1px solid var(--border); border-radius: 8px; text-align: right; font-weight: 700; }
-    input.travado { background: #f4f7fe; color: #a3aed0; cursor: not-allowed; border: none; }
+    td { padding: 10px; border-bottom: 1px solid var(--border); text-align: center; font-weight: 600; font-size: 14px; }
+    
+    input.valor { width: 120px; padding: 8px; border: 1px solid var(--border); border-radius: 8px; text-align: right; font-weight: 700; color: var(--text); }
+    input.travado { background: #f4f7fe; color: #a3aed0; cursor: not-allowed; border: 1px solid transparent; }
     .positivo { color: var(--good); } .negativo { color: var(--bad); }
   </style>
 </head>
@@ -55,7 +55,7 @@
 <div class="container">
   <div class="header">
     <div class="header-info">
-      <h1>PACS v2.8 <span id="statusBadge">SAUDÁVEL</span></h1>
+      <h1>PACS v2.9 <span id="statusBadge">CARREGANDO...</span></h1>
       <p>Performance: <span id="labelFoco">MED</span> | <span id="labelMes">...</span></p>
     </div>
     <div style="display: flex; gap: 15px;">
@@ -69,7 +69,7 @@
 
   <div class="grid-stats">
     <div class="card-stat" id="cardVendas">
-      <span style="font-size:12px; color:var(--muted); font-weight:700">VENDAS MENSAL</span>
+      <span style="font-size:12px; color:var(--muted); font-weight:700">VENDA NO MÊS</span>
       <div class="value" id="valVenda26">R$ 0,00</div>
       <div class="variation" id="varVendaMes">0%</div>
     </div>
@@ -79,11 +79,11 @@
       <div class="variation" id="varCancelMes">0%</div>
     </div>
     <div class="card-stat">
-      <span style="font-size:12px; color:var(--muted); font-weight:700">VENDA ACUMULADA</span>
+      <span style="font-size:12px; color:var(--muted); font-weight:700">FATURAMENTO ACUMULADO</span>
       <div class="value" id="valVendaAcum26" style="color:var(--primary)">R$ 0,00</div>
     </div>
     <div class="card-stat">
-      <span style="font-size:12px; color:var(--muted); font-weight:700">CHURN MÉDIO</span>
+      <span style="font-size:12px; color:var(--muted); font-weight:700">CHURN MÉDIO (ANO)</span>
       <div class="value" id="valChurnMedio">0%</div>
     </div>
   </div>
@@ -94,7 +94,7 @@
       <canvas id="chartVendas"></canvas>
     </div>
     <div class="chart-card">
-      <h3>Taxa de Churn %</h3>
+      <h3>Taxa de Churn % Mensal</h3>
       <canvas id="chartChurn"></canvas>
     </div>
   </div>
@@ -102,7 +102,7 @@
   <div id="secaoDados" class="collapsible-section">
     <div class="trigger" onclick="this.parentElement.classList.toggle('active')">
       <h2 style="margin:0; font-size:18px;">📊 Base de Dados</h2>
-      <span>▼</span>
+      <span id="seta">▼</span>
     </div>
     <div class="content">
       <table>
@@ -129,7 +129,7 @@
   const app = initializeApp(firebaseConfig);
   const db = getFirestore(app);
 
-  const meses = ['Jan','Fev','Mar','Abr','Mai','Jun','Jul','Ago','Set','Out','Nov','Dez'];
+  const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
   const dados25 = {
     MED: { v: [7698.73, 7384.1, 7319.21, 6889.7, 6787.88, 6555.33, 6120.57, 7382.24, 7722.42, 9290, 7539.89, 1630], c: [8388.78, 14521.65, 5923.47, 6952.96, 11365.47, 6861.42, 12172.26, 9403.44, 8302.92, 11795.2, 12577.45, 9324.45] },
     ECOS: { v: [10887.5, 430, 7425, 9750, 7285, 2920, 10380, 9300, 7080, 5716.86, 3400, 1500], c: [1800, 4352.68, 4415.34, 2095.42, 3774.83, 4452.77, 8607.01, 8326.79, 6160.05, 4789.13, 10800, 4707.5] }
@@ -144,28 +144,28 @@
   sel.value = 3;
 
   function initCharts() {
-    const ctxV = document.getElementById('chartVendas').getContext('2d');
-    vChart = new Chart(ctxV, {
+    const commonOpts = { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { weight: 'bold' } } } } };
+    
+    vChart = new Chart(document.getElementById('chartVendas'), {
       type: 'bar',
-      data: { labels: meses, datasets: [
-        { label: '2025', data: [], backgroundColor: '#e9edf7' },
-        { label: '2026', data: [], backgroundColor: '#1e40af' }
+      data: { labels: meses.map(m => m.substring(0,3)), datasets: [
+        { label: '2025', data: [], backgroundColor: '#e9edf7', borderRadius: 5 },
+        { label: '2026', data: [], backgroundColor: '#1e40af', borderRadius: 5 }
       ]},
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom' } } }
+      options: commonOpts
     });
 
-    const ctxC = document.getElementById('chartChurn').getContext('2d');
-    cChart = new Chart(ctxC, {
+    cChart = new Chart(document.getElementById('chartChurn'), {
       type: 'line',
-      data: { labels: meses, datasets: [{ label: 'Churn %', data: [], borderColor: '#ee5d50', tension: 0.3, fill: true, backgroundColor: 'rgba(238, 93, 80, 0.1)' }]},
-      options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } } }
+      data: { labels: meses.map(m => m.substring(0,3)), datasets: [{ label: 'Churn %', data: [], borderColor: '#ee5d50', tension: 0.4, fill: true, backgroundColor: 'rgba(238, 93, 80, 0.05)', pointRadius: 5 }]},
+      options: commonOpts
     });
   }
 
   window.toggleMarca = (m) => {
     salvarMemoria(); marca = m;
-    document.getElementById('btnMED').className = m === 'MED' ? 'brand-btn active' : 'brand-btn';
-    document.getElementById('btnECOS').className = m === 'ECOS' ? 'brand-btn active' : 'brand-btn';
+    document.getElementById('btnMED').classList.toggle('active', m === 'MED');
+    document.getElementById('btnECOS').classList.toggle('active', m === 'ECOS');
     document.getElementById('labelFoco').textContent = m;
     renderTabela(); atualizarTudo();
   };
@@ -191,10 +191,10 @@
       const c25 = dados25[marca].c[i];
       const isLock = i < 3 ? 'readonly class="valor travado"' : 'class="valor"';
       corpo.innerHTML += `<tr>
-        <td>${m}</td>
-        <td>R$ ${v25.toLocaleString('pt-BR')}</td>
+        <td><b>${m.substring(0,3)}</b></td>
+        <td>R$ ${v25.toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
         <td><input ${isLock} id="v26_${i}" oninput="maskMoney(this)" value="${dados26[marca][`v_${i}`] || ''}"></td>
-        <td>R$ ${c25.toLocaleString('pt-BR')}</td>
+        <td>R$ ${c25.toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
         <td><input ${isLock} id="c26_${i}" oninput="maskMoney(this)" value="${dados26[marca][`c_${i}`] || ''}"></td>
         <td id="rowVar_${i}">0%</td><td id="rowCh_${i}">0%</td>
       </tr>`;
@@ -226,12 +226,12 @@
       if(i <= midx) { acV26 += v26; if(v26>0) { chSum += parseFloat(churn); chCount++; } }
 
       if(i === midx) {
-        document.getElementById('valVenda26').textContent = 'R$ ' + v26.toLocaleString('pt-BR');
-        document.getElementById('varVendaMes').textContent = (varPct >= 0 ? '+':'') + varPct + '%';
+        document.getElementById('valVenda26').textContent = 'R$ ' + v26.toLocaleString('pt-BR', {minimumFractionDigits:2});
+        document.getElementById('varVendaMes').textContent = (varPct >= 0 ? '+':'') + varPct + '% vs 2025';
         document.getElementById('varVendaMes').className = 'variation ' + (varPct >= 0 ? 'positivo':'negativo');
-        document.getElementById('valCancel26').textContent = 'R$ ' + c26.toLocaleString('pt-BR');
+        document.getElementById('valCancel26').textContent = 'R$ ' + c26.toLocaleString('pt-BR', {minimumFractionDigits:2});
         const cVar = c25 > 0 ? ((c26-c25)/c25*100).toFixed(1) : 0;
-        document.getElementById('varCancelMes').textContent = (cVar >= 0 ? '+':'') + cVar + '%';
+        document.getElementById('varCancelMes').textContent = (cVar >= 0 ? '+':'') + cVar + '% vs 2025';
         document.getElementById('varCancelMes').className = 'variation ' + (cVar <= 0 ? 'positivo':'negativo');
         
         document.getElementById('cardCancel').className = churn > 15 ? 'card-stat alerta-churn' : 'card-stat';
@@ -240,14 +240,11 @@
       }
     });
 
-    document.getElementById('valVendaAcum26').textContent = 'R$ ' + acV26.toLocaleString('pt-BR');
+    document.getElementById('valVendaAcum26').textContent = 'R$ ' + acV26.toLocaleString('pt-BR', {minimumFractionDigits:2});
     document.getElementById('valChurnMedio').textContent = (chCount > 0 ? (chSum/chCount).toFixed(1) : 0) + '%';
     
-    vChart.data.datasets[0].data = chartV25;
-    vChart.data.datasets[1].data = chartV26;
-    vChart.update();
-    cChart.data.datasets[0].data = chartChurn;
-    cChart.update();
+    if(vChart) { vChart.data.datasets[0].data = chartV25; vChart.data.datasets[1].data = chartV26; vChart.update('none'); }
+    if(cChart) { cChart.data.datasets[0].data = chartChurn; cChart.update('none'); }
     
     clearTimeout(window.saveTimer);
     window.saveTimer = setTimeout(async () => {
@@ -257,12 +254,14 @@
 
   async function load() {
     initCharts();
-    const snap = await getDoc(doc(db, 'dashboard', 'pacs_v2'));
-    if(snap.exists()) {
-      const d = snap.data();
-      dados26.MED = d.MED || {}; dados26.ECOS = d.ECOS || {};
-      if(d.config) { marca = d.config.marca; sel.value = d.config.mes; }
-    }
+    try {
+      const snap = await getDoc(doc(db, 'dashboard', 'pacs_v2'));
+      if(snap.exists()) {
+        const d = snap.data();
+        dados26.MED = d.MED || {}; dados26.ECOS = d.ECOS || {};
+        if(d.config) { marca = d.config.marca || 'MED'; sel.value = d.config.mes || 3; }
+      }
+    } catch(e) { console.error("Erro Firebase:", e); }
     toggleMarca(marca);
   }
   load();
