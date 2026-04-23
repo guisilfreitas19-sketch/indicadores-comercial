@@ -3,627 +3,403 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MED & ECOS Dashboard Comercial</title>
+  <title>Dashboard Comercial - MED & ECOS</title>
   <style>
-    :root {
-      --bg: #0f172a;
-      --panel: #111827;
-      --panel-2: #1f2937;
-      --line: #334155;
-      --text: #e5e7eb;
-      --muted: #94a3b8;
-      --good: #22c55e;
-      --bad: #ef4444;
-      --info: #38bdf8;
-      --warn: #f59e0b;
-      --white: #ffffff;
-      --shadow: 0 10px 30px rgba(0,0,0,.25);
-      --radius: 22px;
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
     }
-
-    * { box-sizing: border-box; }
 
     body {
       margin: 0;
-      font-family: Inter, Arial, Helvetica, sans-serif;
-      background: linear-gradient(180deg, #0b1220 0%, #111827 100%);
-      color: var(--text);
+      padding: 20px;
+      background: #f4f6f9;
+      color: #333;
+    }
+
+    h1, h2, h3 {
+      margin-top: 0;
     }
 
     .container {
       max-width: 1400px;
       margin: 0 auto;
-      padding: 24px;
     }
 
     .header {
-      display: flex;
-      justify-content: space-between;
-      align-items: flex-start;
-      gap: 20px;
-      margin-bottom: 24px;
-      flex-wrap: wrap;
+      background: #1f3c88;
+      color: white;
+      padding: 20px;
+      border-radius: 12px;
+      margin-bottom: 20px;
     }
 
-    .title h1 {
-      margin: 0;
-      font-size: 2rem;
-      letter-spacing: -.02em;
-    }
-
-    .title p {
-      margin: 8px 0 0;
-      color: var(--muted);
-    }
-
-    .toolbar {
-      display: flex;
-      gap: 12px;
-      flex-wrap: wrap;
-      align-items: center;
-    }
-
-    .chip, select {
-      background: rgba(255,255,255,.04);
-      color: var(--text);
-      border: 1px solid var(--line);
-      border-radius: 999px;
-      padding: 10px 14px;
-      font-size: .95rem;
-    }
-
-    .grid-cards {
+    .cards {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 16px;
-      margin-bottom: 24px;
+      grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+      gap: 15px;
+      margin-bottom: 20px;
     }
 
     .card {
-      background: rgba(17,24,39,.85);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(148,163,184,.18);
-      box-shadow: var(--shadow);
-      border-radius: var(--radius);
-      padding: 20px;
+      background: white;
+      border-radius: 12px;
+      padding: 18px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
     }
 
-    .card .label {
-      color: var(--muted);
-      font-size: .9rem;
+    .card h3 {
+      font-size: 16px;
       margin-bottom: 10px;
+      color: #666;
     }
 
-    .card .value {
-      font-size: 1.9rem;
-      font-weight: 700;
-      margin-bottom: 8px;
+    .card .valor {
+      font-size: 28px;
+      font-weight: bold;
+      color: #1f3c88;
     }
 
-    .delta {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      font-weight: 600;
-      font-size: .95rem;
-      padding: 6px 10px;
-      border-radius: 999px;
-      background: rgba(255,255,255,.04);
+    .card .variacao {
+      margin-top: 8px;
+      font-size: 14px;
+      font-weight: bold;
     }
 
-    .delta.good { color: var(--good); }
-    .delta.bad { color: var(--bad); }
-    .delta.neutral { color: var(--info); }
+    .positivo {
+      color: green;
+    }
 
-    .main-grid {
+    .negativo {
+      color: red;
+    }
+
+    .section {
+      background: white;
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    }
+
+    .tables {
       display: grid;
-      grid-template-columns: 1.25fr .75fr;
-      gap: 16px;
-      margin-bottom: 24px;
-    }
-
-    .section-title {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-    }
-
-    .section-title h2 {
-      margin: 0;
-      font-size: 1.15rem;
-    }
-
-    .section-title span {
-      color: var(--muted);
-      font-size: .92rem;
-    }
-
-    .legend {
-      display: flex;
-      gap: 14px;
-      flex-wrap: wrap;
-      color: var(--muted);
-      font-size: .9rem;
-    }
-
-    .legend i {
-      width: 12px;
-      height: 12px;
-      display: inline-block;
-      border-radius: 50%;
-      margin-right: 6px;
-      vertical-align: middle;
-    }
-
-    .chart-wrap {
-      overflow-x: auto;
-      padding-bottom: 6px;
-    }
-
-    .bars {
-      display: grid;
-      grid-template-columns: repeat(12, minmax(70px, 1fr));
-      gap: 12px;
-      align-items: end;
-      min-height: 320px;
-      margin-top: 20px;
-    }
-
-    .month-col {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .bar-stack {
-      height: 240px;
-      width: 100%;
-      display: flex;
-      align-items: end;
-      justify-content: center;
-      gap: 6px;
-    }
-
-    .bar {
-      width: 18px;
-      border-radius: 10px 10px 4px 4px;
-      position: relative;
-      transition: transform .2s ease;
-    }
-
-    .bar:hover { transform: translateY(-4px); }
-
-    .bar span {
-      position: absolute;
-      bottom: calc(100% + 8px);
-      left: 50%;
-      transform: translateX(-50%);
-      background: #020617;
-      color: var(--white);
-      font-size: .75rem;
-      padding: 5px 7px;
-      border-radius: 8px;
-      white-space: nowrap;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity .15s ease;
-      border: 1px solid rgba(255,255,255,.08);
-    }
-
-    .bar:hover span { opacity: 1; }
-
-    .month-label {
-      color: var(--muted);
-      font-size: .82rem;
-    }
-
-    .list-insights {
-      display: grid;
-      gap: 12px;
-    }
-
-    .insight {
-      background: rgba(255,255,255,.03);
-      border: 1px solid rgba(148,163,184,.12);
-      border-radius: 16px;
-      padding: 14px;
-    }
-
-    .insight strong { display: block; margin-bottom: 6px; }
-    .insight small { color: var(--muted); }
-
-    .tabs {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 16px;
-      flex-wrap: wrap;
-    }
-
-    .tab {
-      border: 1px solid var(--line);
-      background: rgba(255,255,255,.03);
-      color: var(--text);
-      border-radius: 999px;
-      padding: 10px 14px;
-      cursor: pointer;
-      font-weight: 600;
-    }
-
-    .tab.active {
-      background: rgba(56,189,248,.16);
-      border-color: rgba(56,189,248,.45);
-      color: #dff6ff;
-    }
-
-    .table-wrap {
-      overflow: auto;
+      grid-template-columns: 1fr;
+      gap: 20px;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
-      min-width: 980px;
+      min-width: 900px;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
     }
 
     th, td {
-      padding: 12px 10px;
-      border-bottom: 1px solid rgba(148,163,184,.14);
-      text-align: right;
-      font-size: .94rem;
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
     }
 
-    th:first-child, td:first-child { text-align: left; }
     th {
-      color: var(--muted);
-      font-weight: 600;
+      background: #1f3c88;
+      color: white;
       position: sticky;
       top: 0;
-      background: #0f172a;
     }
 
-    tr:hover td { background: rgba(255,255,255,.02); }
-
-    .footer-note {
-      margin-top: 16px;
-      color: var(--muted);
-      font-size: .88rem;
+    input[type="number"] {
+      width: 100px;
+      padding: 6px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      text-align: center;
     }
 
-    @media (max-width: 1100px) {
-      .grid-cards { grid-template-columns: repeat(2, 1fr); }
-      .main-grid { grid-template-columns: 1fr; }
+    button {
+      background: #1f3c88;
+      color: white;
+      border: none;
+      padding: 12px 20px;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-bottom: 20px;
     }
 
-    @media (max-width: 700px) {
-      .container { padding: 16px; }
-      .grid-cards { grid-template-columns: 1fr; }
-      .title h1 { font-size: 1.55rem; }
-      .card .value { font-size: 1.5rem; }
+    button:hover {
+      background: #162d66;
+    }
+
+    .resultado-box {
+      margin-top: 15px;
+      padding: 15px;
+      background: #eef3ff;
+      border-left: 5px solid #1f3c88;
+      border-radius: 8px;
+    }
+
+    .small {
+      font-size: 13px;
+      color: #666;
+    }
+
+    .linha-total {
+      background: #f0f4ff;
+      font-weight: bold;
+    }
+
+    @media (max-width: 768px) {
+      input[type="number"] {
+        width: 80px;
+      }
     }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
-      <div class="title">
-        <h1>Dashboard Comercial · MED & ECOS</h1>
-        <p>Comparativo mensal de vendas e cancelamentos entre 2025 e 2026, com visão executiva e detalhamento por marca.</p>
+      <h1>Dashboard Comercial - MED & ECOS</h1>
+      <p>Preencha os valores mensais de vendas e cancelamentos para comparar 2025 e 2026.</p>
+    </div>
+
+    <button onclick="calcularDashboard()">Calcular Dashboard</button>
+
+    <div class="cards">
+      <div class="card">
+        <h3>Vendas MED 2025</h3>
+        <div class="valor" id="totalVendasMed2025">R$ 0,00</div>
       </div>
-      <div class="toolbar">
-        <div class="chip">Meta sugerida: +20%</div>
-        <select id="viewSelector">
-          <option value="vendas">Visualizar: Vendas</option>
-          <option value="cancelamentos">Visualizar: Cancelamentos</option>
-        </select>
+      <div class="card">
+        <h3>Vendas MED 2026</h3>
+        <div class="valor" id="totalVendasMed2026">R$ 0,00</div>
+        <div class="variacao" id="varVendasMed"></div>
+      </div>
+      <div class="card">
+        <h3>Cancelamentos MED 2025</h3>
+        <div class="valor" id="totalCancelMed2025">R$ 0,00</div>
+      </div>
+      <div class="card">
+        <h3>Cancelamentos MED 2026</h3>
+        <div class="valor" id="totalCancelMed2026">R$ 0,00</div>
+        <div class="variacao" id="varCancelMed"></div>
+      </div>
+
+      <div class="card">
+        <h3>Vendas ECOS 2025</h3>
+        <div class="valor" id="totalVendasEcos2025">R$ 0,00</div>
+      </div>
+      <div class="card">
+        <h3>Vendas ECOS 2026</h3>
+        <div class="valor" id="totalVendasEcos2026">R$ 0,00</div>
+        <div class="variacao" id="varVendasEcos"></div>
+      </div>
+      <div class="card">
+        <h3>Cancelamentos ECOS 2025</h3>
+        <div class="valor" id="totalCancelEcos2025">R$ 0,00</div>
+      </div>
+      <div class="card">
+        <h3>Cancelamentos ECOS 2026</h3>
+        <div class="valor" id="totalCancelEcos2026">R$ 0,00</div>
+        <div class="variacao" id="varCancelEcos"></div>
       </div>
     </div>
 
-    <section class="grid-cards" id="summaryCards"></section>
-
-    <section class="main-grid">
-      <div class="card">
-        <div class="section-title">
-          <div>
-            <h2 id="chartTitle">Comparativo Mensal de Vendas</h2>
-            <span id="chartSubtitle">MED 2025 x MED 2026 · ECOS 2025 x ECOS 2026</span>
-          </div>
-          <div class="legend">
-            <span><i style="background:#38bdf8"></i>MED 2025</span>
-            <span><i style="background:#0ea5e9"></i>MED 2026</span>
-            <span><i style="background:#f59e0b"></i>ECOS 2025</span>
-            <span><i style="background:#f97316"></i>ECOS 2026</span>
-          </div>
-        </div>
-        <div class="chart-wrap">
-          <div class="bars" id="bars"></div>
-        </div>
-      </div>
-
-      <div class="card">
-        <div class="section-title">
-          <div>
-            <h2>Insights Gerenciais</h2>
-            <span>Resumo rápido para tomada de decisão</span>
-          </div>
-        </div>
-        <div class="list-insights" id="insights"></div>
-      </div>
-    </section>
-
-    <section class="card">
-      <div class="section-title">
-        <div>
-          <h2>Detalhamento por Marca</h2>
-          <span>Mês a mês com comparação, variação e taxa de cancelamento</span>
-        </div>
-      </div>
-
-      <div class="tabs">
-        <button class="tab active" data-brand="MED">MED</button>
-        <button class="tab" data-brand="ECOS">ECOS</button>
-      </div>
-
-      <div class="table-wrap">
+    <div class="section">
+      <h2>MED</h2>
+      <p class="small">Digite os valores de cada mês.</p>
+      <div class="table-wrapper">
         <table>
           <thead>
             <tr>
               <th>Mês</th>
               <th>Vendas 2025</th>
               <th>Vendas 2026</th>
-              <th>Δ Vendas</th>
-              <th>% Vendas</th>
-              <th>Cancel. 2025</th>
-              <th>Cancel. 2026</th>
-              <th>Δ Cancel.</th>
-              <th>% Cancel.</th>
-              <th>Taxa 2025</th>
-              <th>Taxa 2026</th>
+              <th>Cancelamentos 2025</th>
+              <th>Cancelamentos 2026</th>
             </tr>
           </thead>
-          <tbody id="detailTable"></tbody>
+          <tbody id="tabelaMED"></tbody>
+          <tfoot>
+            <tr class="linha-total">
+              <td>Total</td>
+              <td id="med-v25-total">R$ 0,00</td>
+              <td id="med-v26-total">R$ 0,00</td>
+              <td id="med-c25-total">R$ 0,00</td>
+              <td id="med-c26-total">R$ 0,00</td>
+            </tr>
+          </tfoot>
         </table>
       </div>
-      <div class="footer-note">Os números abaixo são demonstrativos. Substitua pelos seus valores reais mês a mês.</div>
-    </section>
+      <div class="resultado-box" id="resumoMED">
+        Preencha os campos e clique em <strong>Calcular Dashboard</strong>.
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>ECOS</h2>
+      <p class="small">Digite os valores de cada mês.</p>
+      <div class="table-wrapper">
+        <table>
+          <thead>
+            <tr>
+              <th>Mês</th>
+              <th>Vendas 2025</th>
+              <th>Vendas 2026</th>
+              <th>Cancelamentos 2025</th>
+              <th>Cancelamentos 2026</th>
+            </tr>
+          </thead>
+          <tbody id="tabelaECOS"></tbody>
+          <tfoot>
+            <tr class="linha-total">
+              <td>Total</td>
+              <td id="ecos-v25-total">R$ 0,00</td>
+              <td id="ecos-v26-total">R$ 0,00</td>
+              <td id="ecos-c25-total">R$ 0,00</td>
+              <td id="ecos-c26-total">R$ 0,00</td>
+            </tr>
+          </tfoot>
+        </table>
+      </div>
+      <div class="resultado-box" id="resumoECOS">
+        Preencha os campos e clique em <strong>Calcular Dashboard</strong>.
+      </div>
+    </div>
   </div>
 
   <script>
-    const months = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+    const meses = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
 
-    const data = {
-      MED: {
-        vendas2025: [7200, 7600, 7520, 8100, 8400, 8900, 9100, 9500, 9800, 10200, 10500, 11000],
-        vendas2026: [7900, 8200, 8600, 9000, 9300, 9700, 10100, 10900, 11200, 11800, 12300, 12800],
-        cancel2025: [1100, 980, 1050, 1200, 1150, 1180, 1260, 1310, 1340, 1380, 1420, 1500],
-        cancel2026: [1000, 930, 920, 980, 1020, 1060, 1100, 1180, 1200, 1240, 1290, 1340]
-      },
-      ECOS: {
-        vendas2025: [5400, 5600, 5900, 6100, 6400, 6700, 6900, 7100, 7300, 7600, 7800, 8000],
-        vendas2026: [5000, 5250, 5600, 5900, 6150, 6500, 6800, 7000, 7350, 7700, 8050, 8400],
-        cancel2025: [620, 650, 680, 720, 740, 760, 790, 810, 840, 860, 890, 910],
-        cancel2026: [700, 720, 750, 770, 790, 810, 845, 870, 900, 930, 965, 990]
-      }
-    };
+    function criarTabela(idTabela, prefixo) {
+      const tbody = document.getElementById(idTabela);
+      tbody.innerHTML = "";
 
-    const currency = new Intl.NumberFormat('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 });
-    const percent = (value) => `${value >= 0 ? '+' : ''}${value.toFixed(1)}%`;
-
-    const sum = (arr) => arr.reduce((a, b) => a + b, 0);
-    const deltaPct = (oldVal, newVal) => oldVal === 0 ? 0 : ((newVal - oldVal) / oldVal) * 100;
-    const rate = (cancel, sales) => sales === 0 ? 0 : (cancel / sales) * 100;
-
-    const totals = {
-      MED: {
-        vendas2025: sum(data.MED.vendas2025),
-        vendas2026: sum(data.MED.vendas2026),
-        cancel2025: sum(data.MED.cancel2025),
-        cancel2026: sum(data.MED.cancel2026)
-      },
-      ECOS: {
-        vendas2025: sum(data.ECOS.vendas2025),
-        vendas2026: sum(data.ECOS.vendas2026),
-        cancel2025: sum(data.ECOS.cancel2025),
-        cancel2026: sum(data.ECOS.cancel2026)
-      }
-    };
-
-    function buildSummaryCards() {
-      const cards = [
-        {
-          label: 'Vendas MED 2026',
-          value: currency.format(totals.MED.vendas2026),
-          delta: deltaPct(totals.MED.vendas2025, totals.MED.vendas2026),
-          positiveIsGood: true
-        },
-        {
-          label: 'Vendas ECOS 2026',
-          value: currency.format(totals.ECOS.vendas2026),
-          delta: deltaPct(totals.ECOS.vendas2025, totals.ECOS.vendas2026),
-          positiveIsGood: true
-        },
-        {
-          label: 'Cancelamentos MED 2026',
-          value: currency.format(totals.MED.cancel2026),
-          delta: deltaPct(totals.MED.cancel2025, totals.MED.cancel2026),
-          positiveIsGood: false
-        },
-        {
-          label: 'Cancelamentos ECOS 2026',
-          value: currency.format(totals.ECOS.cancel2026),
-          delta: deltaPct(totals.ECOS.cancel2025, totals.ECOS.cancel2026),
-          positiveIsGood: false
-        }
-      ];
-
-      document.getElementById('summaryCards').innerHTML = cards.map(card => {
-        const isGood = card.positiveIsGood ? card.delta >= 0 : card.delta <= 0;
-        return `
-          <div class="card">
-            <div class="label">${card.label}</div>
-            <div class="value">${card.value}</div>
-            <div class="delta ${isGood ? 'good' : 'bad'}">${percent(card.delta)}</div>
-          </div>
+      meses.forEach((mes, i) => {
+        const linha = document.createElement("tr");
+        linha.innerHTML = `
+          <td>${mes}</td>
+          <td><input type="number" id="${prefixo}_v25_${i}" placeholder="0" min="0"></td>
+          <td><input type="number" id="${prefixo}_v26_${i}" placeholder="0" min="0"></td>
+          <td><input type="number" id="${prefixo}_c25_${i}" placeholder="0" min="0"></td>
+          <td><input type="number" id="${prefixo}_c26_${i}" placeholder="0" min="0"></td>
         `;
-      }).join('');
-    }
-
-    function renderBars(type = 'vendas') {
-      const bars = document.getElementById('bars');
-      const med25 = data.MED[type + '2025'] || data.MED[type === 'vendas' ? 'vendas2025' : 'cancel2025'];
-      const med26 = data.MED[type + '2026'] || data.MED[type === 'vendas' ? 'vendas2026' : 'cancel2026'];
-      const ecos25 = data.ECOS[type + '2025'] || data.ECOS[type === 'vendas' ? 'vendas2025' : 'cancel2025'];
-      const ecos26 = data.ECOS[type + '2026'] || data.ECOS[type === 'vendas' ? 'vendas2026' : 'cancel2026'];
-      const allValues = [...med25, ...med26, ...ecos25, ...ecos26];
-      const maxVal = Math.max(...allValues);
-
-      bars.innerHTML = months.map((month, i) => {
-        const values = [
-          { color: '#38bdf8', value: med25[i], label: 'MED 2025' },
-          { color: '#0ea5e9', value: med26[i], label: 'MED 2026' },
-          { color: '#f59e0b', value: ecos25[i], label: 'ECOS 2025' },
-          { color: '#f97316', value: ecos26[i], label: 'ECOS 2026' },
-        ];
-
-        return `
-          <div class="month-col">
-            <div class="bar-stack">
-              ${values.map(item => `
-                <div class="bar" style="height:${(item.value / maxVal) * 220}px;background:${item.color}">
-                  <span>${item.label}: ${currency.format(item.value)}</span>
-                </div>
-              `).join('')}
-            </div>
-            <div class="month-label">${month}</div>
-          </div>
-        `;
-      }).join('');
-
-      document.getElementById('chartTitle').textContent = type === 'vendas' ? 'Comparativo Mensal de Vendas' : 'Comparativo Mensal de Cancelamentos';
-      document.getElementById('chartSubtitle').textContent = type === 'vendas'
-        ? 'MED 2025 x MED 2026 · ECOS 2025 x ECOS 2026'
-        : 'MED 2025 x MED 2026 · ECOS 2025 x ECOS 2026';
-    }
-
-    function buildInsights() {
-      const medGrowth = deltaPct(totals.MED.vendas2025, totals.MED.vendas2026);
-      const ecosGrowth = deltaPct(totals.ECOS.vendas2025, totals.ECOS.vendas2026);
-      const medCancelVar = deltaPct(totals.MED.cancel2025, totals.MED.cancel2026);
-      const ecosCancelVar = deltaPct(totals.ECOS.cancel2025, totals.ECOS.cancel2026);
-
-      const medBestMonthIndex = data.MED.vendas2026.indexOf(Math.max(...data.MED.vendas2026));
-      const ecosBestMonthIndex = data.ECOS.vendas2026.indexOf(Math.max(...data.ECOS.vendas2026));
-
-      const alertBrand = ecosCancelVar > medCancelVar ? 'ECOS' : 'MED';
-
-      const items = [
-        {
-          title: `MED ${medGrowth >= 0 ? 'acima' : 'abaixo'} de 2025`,
-          text: `Vendas de 2026 fecharam em ${percent(medGrowth)} frente a 2025.`,
-          note: 'Bom para acompanhar meta anual.'
-        },
-        {
-          title: `ECOS ${ecosGrowth >= 0 ? 'cresceu' : 'recuou'} no comparativo anual`,
-          text: `Variação consolidada de ${percent(ecosGrowth)} nas vendas.`,
-          note: 'Avalie campanhas e sazonalidade por mês.'
-        },
-        {
-          title: `Melhores meses de 2026`,
-          text: `MED: ${months[medBestMonthIndex]} · ECOS: ${months[ecosBestMonthIndex]}.`,
-          note: 'Esses meses merecem análise de causa.'
-        },
-        {
-          title: `Alerta de cancelamento em ${alertBrand}`,
-          text: `${alertBrand === 'MED' ? percent(medCancelVar) : percent(ecosCancelVar)} no comparativo de cancelamentos.`,
-          note: 'Use a taxa de cancelamento para entender qualidade da venda.'
-        }
-      ];
-
-      document.getElementById('insights').innerHTML = items.map(item => `
-        <div class="insight">
-          <strong>${item.title}</strong>
-          <div>${item.text}</div>
-          <small>${item.note}</small>
-        </div>
-      `).join('');
-    }
-
-    function renderTable(brand = 'MED') {
-      const tbody = document.getElementById('detailTable');
-      const brandData = data[brand];
-      let rows = '';
-
-      months.forEach((month, i) => {
-        const v25 = brandData.vendas2025[i];
-        const v26 = brandData.vendas2026[i];
-        const c25 = brandData.cancel2025[i];
-        const c26 = brandData.cancel2026[i];
-        const dv = v26 - v25;
-        const dc = c26 - c25;
-
-        rows += `
-          <tr>
-            <td>${month}</td>
-            <td>${currency.format(v25)}</td>
-            <td>${currency.format(v26)}</td>
-            <td style="color:${dv >= 0 ? '#22c55e' : '#ef4444'}">${currency.format(dv)}</td>
-            <td style="color:${dv >= 0 ? '#22c55e' : '#ef4444'}">${percent(deltaPct(v25, v26))}</td>
-            <td>${currency.format(c25)}</td>
-            <td>${currency.format(c26)}</td>
-            <td style="color:${dc <= 0 ? '#22c55e' : '#ef4444'}">${currency.format(dc)}</td>
-            <td style="color:${dc <= 0 ? '#22c55e' : '#ef4444'}">${percent(deltaPct(c25, c26))}</td>
-            <td>${rate(c25, v25).toFixed(1)}%</td>
-            <td>${rate(c26, v26).toFixed(1)}%</td>
-          </tr>
-        `;
+        tbody.appendChild(linha);
       });
+    }
 
-      const totalV25 = sum(brandData.vendas2025);
-      const totalV26 = sum(brandData.vendas2026);
-      const totalC25 = sum(brandData.cancel2025);
-      const totalC26 = sum(brandData.cancel2026);
-      const totalDV = totalV26 - totalV25;
-      const totalDC = totalC26 - totalC25;
+    criarTabela("tabelaMED", "med");
+    criarTabela("tabelaECOS", "ecos");
 
-      rows += `
-        <tr>
-          <td><strong>Total</strong></td>
-          <td><strong>${currency.format(totalV25)}</strong></td>
-          <td><strong>${currency.format(totalV26)}</strong></td>
-          <td style="color:${totalDV >= 0 ? '#22c55e' : '#ef4444'}"><strong>${currency.format(totalDV)}</strong></td>
-          <td style="color:${totalDV >= 0 ? '#22c55e' : '#ef4444'}"><strong>${percent(deltaPct(totalV25, totalV26))}</strong></td>
-          <td><strong>${currency.format(totalC25)}</strong></td>
-          <td><strong>${currency.format(totalC26)}</strong></td>
-          <td style="color:${totalDC <= 0 ? '#22c55e' : '#ef4444'}"><strong>${currency.format(totalDC)}</strong></td>
-          <td style="color:${totalDC <= 0 ? '#22c55e' : '#ef4444'}"><strong>${percent(deltaPct(totalC25, totalC26))}</strong></td>
-          <td><strong>${rate(totalC25, totalV25).toFixed(1)}%</strong></td>
-          <td><strong>${rate(totalC26, totalV26).toFixed(1)}%</strong></td>
-        </tr>
+    function valorInput(id) {
+      return parseFloat(document.getElementById(id).value) || 0;
+    }
+
+    function moeda(valor) {
+      return valor.toLocaleString("pt-BR", {
+        style: "currency",
+        currency: "BRL"
+      });
+    }
+
+    function percentual(base, atual) {
+      if (base === 0 && atual === 0) return "0,00%";
+      if (base === 0) return "100,00%";
+      const calc = ((atual - base) / base) * 100;
+      return calc.toFixed(2).replace(".", ",") + "%";
+    }
+
+    function classeVariacao(base, atual, inverso = false) {
+      if (atual === base) return "";
+      if (!inverso) {
+        return atual >= base ? "positivo" : "negativo";
+      } else {
+        return atual <= base ? "positivo" : "negativo";
+      }
+    }
+
+    function calcularGrupo(prefixo) {
+      let v25 = 0, v26 = 0, c25 = 0, c26 = 0;
+
+      for (let i = 0; i < 12; i++) {
+        v25 += valorInput(`${prefixo}_v25_${i}`);
+        v26 += valorInput(`${prefixo}_v26_${i}`);
+        c25 += valorInput(`${prefixo}_c25_${i}`);
+        c26 += valorInput(`${prefixo}_c26_${i}`);
+      }
+
+      return { v25, v26, c25, c26 };
+    }
+
+    function calcularDashboard() {
+      const med = calcularGrupo("med");
+      const ecos = calcularGrupo("ecos");
+
+      document.getElementById("totalVendasMed2025").textContent = moeda(med.v25);
+      document.getElementById("totalVendasMed2026").textContent = moeda(med.v26);
+      document.getElementById("totalCancelMed2025").textContent = moeda(med.c25);
+      document.getElementById("totalCancelMed2026").textContent = moeda(med.c26);
+
+      document.getElementById("totalVendasEcos2025").textContent = moeda(ecos.v25);
+      document.getElementById("totalVendasEcos2026").textContent = moeda(ecos.v26);
+      document.getElementById("totalCancelEcos2025").textContent = moeda(ecos.c25);
+      document.getElementById("totalCancelEcos2026").textContent = moeda(ecos.c26);
+
+      const varVMed = document.getElementById("varVendasMed");
+      varVMed.textContent = "Variação: " + percentual(med.v25, med.v26);
+      varVMed.className = "variacao " + classeVariacao(med.v25, med.v26);
+
+      const varCMed = document.getElementById("varCancelMed");
+      varCMed.textContent = "Variação: " + percentual(med.c25, med.c26);
+      varCMed.className = "variacao " + classeVariacao(med.c25, med.c26, true);
+
+      const varVEcos = document.getElementById("varVendasEcos");
+      varVEcos.textContent = "Variação: " + percentual(ecos.v25, ecos.v26);
+      varVEcos.className = "variacao " + classeVariacao(ecos.v25, ecos.v26);
+
+      const varCEcos = document.getElementById("varCancelEcos");
+      varCEcos.textContent = "Variação: " + percentual(ecos.c25, ecos.c26);
+      varCEcos.className = "variacao " + classeVariacao(ecos.c25, ecos.c26, true);
+
+      document.getElementById("med-v25-total").textContent = moeda(med.v25);
+      document.getElementById("med-v26-total").textContent = moeda(med.v26);
+      document.getElementById("med-c25-total").textContent = moeda(med.c25);
+      document.getElementById("med-c26-total").textContent = moeda(med.c26);
+
+      document.getElementById("ecos-v25-total").textContent = moeda(ecos.v25);
+      document.getElementById("ecos-v26-total").textContent = moeda(ecos.v26);
+      document.getElementById("ecos-c25-total").textContent = moeda(ecos.c25);
+      document.getElementById("ecos-c26-total").textContent = moeda(ecos.c26);
+
+      const taxaCancelMed25 = med.v25 > 0 ? ((med.c25 / med.v25) * 100).toFixed(2).replace(".", ",") : "0,00";
+      const taxaCancelMed26 = med.v26 > 0 ? ((med.c26 / med.v26) * 100).toFixed(2).replace(".", ",") : "0,00";
+
+      const taxaCancelEcos25 = ecos.v25 > 0 ? ((ecos.c25 / ecos.v25) * 100).toFixed(2).replace(".", ",") : "0,00";
+      const taxaCancelEcos26 = ecos.v26 > 0 ? ((ecos.c26 / ecos.v26) * 100).toFixed(2).replace(".", ",") : "0,00";
+
+      document.getElementById("resumoMED").innerHTML = `
+        <strong>Resumo MED:</strong><br>
+        Vendas 2025: ${moeda(med.v25)}<br>
+        Vendas 2026: ${moeda(med.v26)} (${percentual(med.v25, med.v26)})<br>
+        Cancelamentos 2025: ${moeda(med.c25)}<br>
+        Cancelamentos 2026: ${moeda(med.c26)} (${percentual(med.c25, med.c26)})<br>
+        Taxa de cancelamento 2025: ${taxaCancelMed25}%<br>
+        Taxa de cancelamento 2026: ${taxaCancelMed26}%
       `;
 
-      tbody.innerHTML = rows;
+      document.getElementById("resumoECOS").innerHTML = `
+        <strong>Resumo ECOS:</strong><br>
+        Vendas 2025: ${moeda(ecos.v25)}<br>
+        Vendas 2026: ${moeda(ecos.v26)} (${percentual(ecos.v25, ecos.v26)})<br>
+        Cancelamentos 2025: ${moeda(ecos.c25)}<br>
+        Cancelamentos 2026: ${moeda(ecos.c26)} (${percentual(ecos.c25, ecos.c26)})<br>
+        Taxa de cancelamento 2025: ${taxaCancelEcos25}%<br>
+        Taxa de cancelamento 2026: ${taxaCancelEcos26}%
+      `;
     }
-
-    document.getElementById('viewSelector').addEventListener('change', (e) => {
-      const type = e.target.value;
-      renderBars(type);
-    });
-
-    document.querySelectorAll('.tab').forEach(tab => {
-      tab.addEventListener('click', () => {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        tab.classList.add('active');
-        renderTable(tab.dataset.brand);
-      });
-    });
-
-    buildSummaryCards();
-    renderBars('vendas');
-    buildInsights();
-    renderTable('MED');
   </script>
 </body>
 </html>
