@@ -356,13 +356,20 @@
     }
 
     function aplicarDadosFormulario(payload) {
-      if (!payload) return;
-      const { formData = {}, marcaAtual: marcaSalva = 'MED', secoes = {} } = payload;
+      const dadosSalvos = payload || {};
+      const formData = dadosSalvos.formData || {};
+      const marcaSalva = dadosSalvos.marcaAtual || 'MED';
+      const secoes = dadosSalvos.secoes || {};
+
       const dadosComPadrao = { ...dadosPadrao, ...formData };
+
       Object.entries(dadosComPadrao).forEach(([id, value]) => {
         const el = document.getElementById(id);
-        if (el) el.value = value;
+        if (el && (value !== undefined && value !== null)) {
+          el.value = value;
+        }
       });
+
       marcaAtual = marcaSalva;
       document.querySelectorAll('.brand-tab').forEach(btn => btn.classList.remove('active'));
       const alvo = Array.from(document.querySelectorAll('.brand-tab')).find(btn => btn.textContent.trim() === marcaAtual);
@@ -443,13 +450,13 @@
 
     async function carregarFirebase() {
       try {
+        preencherDadosIniciais();
         const snap = await getDoc(doc(db, 'dashboard', 'med-ecos'));
         if (snap.exists()) {
           aplicarDadosFormulario(snap.data());
           firebaseLoadedOnce = true;
           setStatus('Dados carregados do Firebase');
         } else {
-          preencherDadosIniciais();
           firebaseLoadedOnce = true;
           calcularDashboard();
           setStatus('Dados padrão carregados');
@@ -493,6 +500,7 @@
           campo.value = valor;
         }
       });
+      calcularDashboard();
     }
 
     criarTabela('tabelaMED', 'med');
