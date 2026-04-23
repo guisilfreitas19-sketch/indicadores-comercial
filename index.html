@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PACS v3.0 | Estável</title>
+  <title>PACS v3.1 | Estável</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
@@ -17,7 +17,7 @@
     
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
     .header-info h1 { margin: 0; font-size: 28px; font-weight: 800; }
-    #statusBadge { padding: 4px 12px; border-radius: 20px; font-size: 12px; margin-left: 10px; text-transform: uppercase; color: white; font-weight: 800; }
+    #statusBadge { padding: 4px 12px; border-radius: 20px; font-size: 12px; margin-left: 10px; text-transform: uppercase; color: white; font-weight: 800; transition: 0.3s; }
     
     .brand-selector { background: #e9edf7; padding: 5px; border-radius: 12px; display: flex; gap: 5px; }
     .brand-btn { padding: 8px 20px; border: none; border-radius: 10px; cursor: pointer; font-weight: 700; color: var(--primary); background: transparent; transition: 0.3s; }
@@ -27,22 +27,21 @@
     .grid-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 25px; }
     .card-stat { background: var(--card); padding: 20px; border-radius: 20px; box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.12); border: 2px solid transparent; }
     .card-stat .value { font-size: 26px; font-weight: 800; margin: 5px 0; }
-    .variation { font-size: 14px; font-weight: 800; }
+    .variation { font-size: 13px; font-weight: 800; }
     
     .charts-container { display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px; margin-bottom: 25px; }
     .chart-card { background: var(--card); padding: 20px; border-radius: 20px; box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.08); height: 350px; }
     .chart-card h3 { margin: 0 0 15px 0; font-size: 14px; color: var(--muted); text-transform: uppercase; }
 
     .collapsible-section { background: var(--card); border-radius: 20px; box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.08); }
-    .trigger { padding: 20px; display: flex; justify-content: space-between; cursor: pointer; align-items: center; }
-    .content { display: block; padding: 0 20px 20px; overflow-x: auto; }
+    .trigger { padding: 20px; display: flex; justify-content: space-between; cursor: pointer; align-items: center; border-bottom: 1px solid var(--border); }
+    .content { padding: 20px; overflow-x: auto; }
     
     table { width: 100%; border-collapse: collapse; min-width: 800px; }
     th { padding: 12px; color: var(--muted); font-size: 11px; text-transform: uppercase; border-bottom: 1px solid var(--border); }
     td { padding: 10px; border-bottom: 1px solid var(--border); text-align: center; font-weight: 600; font-size: 14px; }
     
-    input.valor { width: 120px; padding: 8px; border: 1px solid var(--border); border-radius: 8px; text-align: right; font-weight: 700; color: var(--text); }
-    input.travado { background: #f4f7fe; color: #a3aed0; cursor: not-allowed; border: 1px solid transparent; }
+    input.valor { width: 125px; padding: 8px; border: 1px solid var(--border); border-radius: 8px; text-align: right; font-weight: 700; color: var(--text); background: #fff; }
     .positivo { color: var(--good); } .negativo { color: var(--bad); }
   </style>
 </head>
@@ -51,7 +50,7 @@
 <div class="container">
   <div class="header">
     <div class="header-info">
-      <h1>PACS v3.0 <span id="statusBadge" style="background: #a3aed0;">CARREGANDO...</span></h1>
+      <h1>PACS v3.1 <span id="statusBadge" style="background: var(--primary);">CONECTADO</span></h1>
       <p>Performance: <span id="labelFoco">MED</span> | <span id="labelMes">...</span></p>
     </div>
     <div style="display: flex; gap: 15px;">
@@ -133,7 +132,6 @@
   let marca = 'MED';
   let dados26 = { MED: {}, ECOS: {} };
   let vChart, cChart;
-  let isReady = false; // TRAVA DE SEGURANÇA
 
   const sel = document.getElementById('mesSelecionado');
   meses.forEach((m, i) => sel.add(new Option(m, i)));
@@ -157,7 +155,6 @@
   }
 
   window.toggleMarca = (m) => {
-    if(!isReady) return;
     salvarMemoria();
     marca = m;
     document.getElementById('btnMED').classList.toggle('active', m === 'MED');
@@ -168,7 +165,6 @@
   };
 
   function salvarMemoria() {
-    if(!isReady) return;
     meses.forEach((_, i) => {
       const vVal = document.getElementById(`v26_${i}`)?.value || '';
       const cVal = document.getElementById(`c26_${i}`)?.value || '';
@@ -190,20 +186,18 @@
     meses.forEach((m, i) => {
       const v25 = dados25[marca].v[i];
       const c25 = dados25[marca].c[i];
-      const isLock = i < 3 ? 'readonly class="valor travado"' : 'class="valor"';
       corpo.innerHTML += `<tr>
         <td><b>${m.substring(0,3)}</b></td>
         <td>R$ ${v25.toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
-        <td><input ${isLock} id="v26_${i}" oninput="maskMoney(this)" value="${dados26[marca][`v_${i}`] || ''}"></td>
+        <td><input class="valor" id="v26_${i}" oninput="maskMoney(this)" value="${dados26[marca][`v_${i}`] || ''}"></td>
         <td>R$ ${c25.toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
-        <td><input ${isLock} id="c26_${i}" oninput="maskMoney(this)" value="${dados26[marca][`c_${i}`] || ''}"></td>
+        <td><input class="valor" id="c26_${i}" oninput="maskMoney(this)" value="${dados26[marca][`c_${i}`] || ''}"></td>
         <td id="rowVar_${i}">0%</td><td id="rowCh_${i}">0%</td>
       </tr>`;
     });
   }
 
   window.atualizarTudo = () => {
-    if(!isReady) return;
     salvarMemoria();
     const midx = parseInt(sel.value);
     document.getElementById('labelMes').textContent = meses[midx];
@@ -251,14 +245,16 @@
 
   let saveTimer;
   function agendarSalvamento() {
-    if(!isReady) return;
     clearTimeout(saveTimer);
+    document.getElementById('statusBadge').textContent = 'SINCRONIZANDO...';
+    document.getElementById('statusBadge').style.background = '#f6ad55';
     saveTimer = setTimeout(async () => {
       try {
         await setDoc(doc(db, 'dashboard', 'pacs_v2'), { ...dados26, config: { marca, mes: sel.value } });
-        console.log("Salvo com sucesso!");
+        document.getElementById('statusBadge').textContent = 'SALVO';
+        document.getElementById('statusBadge').style.background = 'var(--good)';
       } catch (e) { console.error("Erro ao salvar:", e); }
-    }, 2000);
+    }, 1500);
   }
 
   async function load() {
@@ -267,16 +263,13 @@
       const snap = await getDoc(doc(db, 'dashboard', 'pacs_v2'));
       if(snap.exists()) {
         const d = snap.data();
-        dados26.MED = d.MED || {};
-        dados26.ECOS = d.ECOS || {};
+        if(d.MED) dados26.MED = d.MED;
+        if(d.ECOS) dados26.ECOS = d.ECOS;
         if(d.config) { marca = d.config.marca || 'MED'; sel.value = d.config.mes || 3; }
       }
-      isReady = true; // SÓ LIBERA O SISTEMA APÓS CARREGAR
-      toggleMarca(marca);
-    } catch(e) { 
-      console.error("Erro Firebase:", e);
-      document.getElementById('statusBadge').textContent = 'ERRO CONEXÃO';
-    }
+      renderTabela();
+      atualizarTudo();
+    } catch(e) { console.error("Erro Firebase:", e); }
   }
   load();
 </script>
