@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PACS v3.1 | Estável</title>
+  <title>PACS v3.2 | BI Dashboard</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
@@ -15,6 +15,7 @@
     body { margin: 0; padding: 20px; background-color: var(--bg); color: var(--text); }
     .container { max-width: 1600px; margin: 0 auto; }
     
+    /* Header */
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
     .header-info h1 { margin: 0; font-size: 28px; font-weight: 800; }
     #statusBadge { padding: 4px 12px; border-radius: 20px; font-size: 12px; margin-left: 10px; text-transform: uppercase; color: white; font-weight: 800; transition: 0.3s; }
@@ -24,16 +25,19 @@
     .brand-btn.active { background: #fff; box-shadow: 0px 4px 14px rgba(0,0,0,0.05); }
     select { padding: 10px; border-radius: 12px; border: 1px solid var(--border); font-weight: 700; cursor: pointer; }
 
+    /* Cards */
     .grid-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 25px; }
     .card-stat { background: var(--card); padding: 20px; border-radius: 20px; box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.12); border: 2px solid transparent; }
     .card-stat .value { font-size: 26px; font-weight: 800; margin: 5px 0; }
     .variation { font-size: 13px; font-weight: 800; }
     
+    /* Gráficos */
     .charts-container { display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px; margin-bottom: 25px; }
     .chart-card { background: var(--card); padding: 20px; border-radius: 20px; box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.08); height: 350px; }
     .chart-card h3 { margin: 0 0 15px 0; font-size: 14px; color: var(--muted); text-transform: uppercase; }
 
-    .collapsible-section { background: var(--card); border-radius: 20px; box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.08); }
+    /* Tabela */
+    .collapsible-section { background: var(--card); border-radius: 20px; box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.08); overflow: hidden; }
     .trigger { padding: 20px; display: flex; justify-content: space-between; cursor: pointer; align-items: center; border-bottom: 1px solid var(--border); }
     .content { padding: 20px; overflow-x: auto; }
     
@@ -50,7 +54,7 @@
 <div class="container">
   <div class="header">
     <div class="header-info">
-      <h1>PACS v3.1 <span id="statusBadge" style="background: var(--primary);">CONECTADO</span></h1>
+      <h1>PACS v3.2 <span id="statusBadge" style="background: var(--primary);">CONECTADO</span></h1>
       <p>Performance: <span id="labelFoco">MED</span> | <span id="labelMes">...</span></p>
     </div>
     <div style="display: flex; gap: 15px;">
@@ -63,12 +67,12 @@
   </div>
 
   <div class="grid-stats">
-    <div class="card-stat" id="cardVendas">
+    <div class="card-stat">
       <span style="font-size:12px; color:var(--muted); font-weight:700">VENDA NO MÊS</span>
       <div class="value" id="valVenda26">R$ 0,00</div>
       <div class="variation" id="varVendaMes">0%</div>
     </div>
-    <div class="card-stat" id="cardCancel">
+    <div class="card-stat">
       <span style="font-size:12px; color:var(--muted); font-weight:700">CANCELAMENTOS</span>
       <div class="value" id="valCancel26">R$ 0,00</div>
       <div class="variation" id="varCancelMes">0%</div>
@@ -95,10 +99,11 @@
   </div>
 
   <div class="collapsible-section">
-    <div class="trigger">
+    <div class="trigger" onclick="toggleTabela()">
       <h2 style="margin:0; font-size:18px;">📊 Base de Dados</h2>
+      <span id="setaIcon" style="font-size: 18px; transition: 0.3s;">▼</span>
     </div>
-    <div class="content">
+    <div class="content" id="tabelaConteudo">
       <table>
         <thead><tr><th>Mês</th><th>Venda 25</th><th>Venda 26</th><th>Canc. 25</th><th>Canc. 26</th><th>Crescimento</th><th>Churn %</th></tr></thead>
         <tbody id="tabelaCorpo"></tbody>
@@ -142,20 +147,28 @@
     vChart = new Chart(document.getElementById('chartVendas'), {
       type: 'bar',
       data: { labels: meses.map(m => m.substring(0,3)), datasets: [
-        { label: '2025', data: [], backgroundColor: '#e9edf7' },
-        { label: '2026', data: [], backgroundColor: '#1e40af' }
+        { label: '2025', data: [], backgroundColor: '#e9edf7', borderRadius: 4 },
+        { label: '2026', data: [], backgroundColor: '#1e40af', borderRadius: 4 }
       ]},
       options: commonOpts
     });
     cChart = new Chart(document.getElementById('chartChurn'), {
       type: 'line',
-      data: { labels: meses.map(m => m.substring(0,3)), datasets: [{ label: 'Churn %', data: [], borderColor: '#ee5d50', tension: 0.4 }]},
+      data: { labels: meses.map(m => m.substring(0,3)), datasets: [{ label: 'Churn %', data: [], borderColor: '#ee5d50', tension: 0.4, pointRadius: 4 }]},
       options: commonOpts
     });
   }
 
+  window.toggleTabela = () => {
+    const conteudo = document.getElementById('tabelaConteudo');
+    const seta = document.getElementById('setaIcon');
+    const isHidden = conteudo.style.display === 'none';
+    conteudo.style.display = isHidden ? 'block' : 'none';
+    seta.style.transform = isHidden ? 'rotate(0deg)' : 'rotate(-90deg)';
+  };
+
   window.toggleMarca = (m) => {
-    salvarMemoria();
+    salvarMemoriaLocal();
     marca = m;
     document.getElementById('btnMED').classList.toggle('active', m === 'MED');
     document.getElementById('btnECOS').classList.toggle('active', m === 'ECOS');
@@ -164,12 +177,10 @@
     atualizarTudo();
   };
 
-  function salvarMemoria() {
+  function salvarMemoriaLocal() {
     meses.forEach((_, i) => {
-      const vVal = document.getElementById(`v26_${i}`)?.value || '';
-      const cVal = document.getElementById(`c26_${i}`)?.value || '';
-      dados26[marca][`v_${i}`] = vVal;
-      dados26[marca][`c_${i}`] = cVal;
+      dados26[marca][`v_${i}`] = document.getElementById(`v26_${i}`)?.value || '';
+      dados26[marca][`c_${i}`] = document.getElementById(`c26_${i}`)?.value || '';
     });
   }
 
@@ -198,7 +209,7 @@
   }
 
   window.atualizarTudo = () => {
-    salvarMemoria();
+    salvarMemoriaLocal();
     const midx = parseInt(sel.value);
     document.getElementById('labelMes').textContent = meses[midx];
     let acV26 = 0, chSum = 0, chCount = 0;
@@ -246,13 +257,14 @@
   let saveTimer;
   function agendarSalvamento() {
     clearTimeout(saveTimer);
-    document.getElementById('statusBadge').textContent = 'SINCRONIZANDO...';
-    document.getElementById('statusBadge').style.background = '#f6ad55';
+    const badge = document.getElementById('statusBadge');
+    badge.textContent = 'SINCRONIZANDO...';
+    badge.style.background = '#f6ad55';
     saveTimer = setTimeout(async () => {
       try {
         await setDoc(doc(db, 'dashboard', 'pacs_v2'), { ...dados26, config: { marca, mes: sel.value } });
-        document.getElementById('statusBadge').textContent = 'SALVO';
-        document.getElementById('statusBadge').style.background = 'var(--good)';
+        badge.textContent = 'SALVO';
+        badge.style.background = 'var(--good)';
       } catch (e) { console.error("Erro ao salvar:", e); }
     }, 1500);
   }
