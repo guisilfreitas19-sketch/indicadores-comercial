@@ -6,84 +6,268 @@
   <title>Dashboard Comercial - MED & ECOS</title>
   <style>
     * { box-sizing: border-box; font-family: Arial, sans-serif; }
-    body { margin: 0; padding: 20px; background: #f4f6f9; color: #333; }
-    .container { max-width: 1500px; margin: 0 auto; }
-    .header { background: linear-gradient(135deg, #1f3c88, #2952b3); color: white; padding: 24px; border-radius: 14px; margin-bottom: 20px; }
-    .header h1 { margin: 0 0 8px; }
-    .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; }
-    button {
-      background: #1f3c88; color: white; border: none; padding: 12px 18px; border-radius: 10px;
-      cursor: pointer; font-size: 15px; font-weight: 600;
+
+    body {
+      margin: 0;
+      padding: 20px;
+      background: #f4f6f9;
+      color: #333;
     }
-    button:hover { background: #162d66; }
-    .btn-danger { background: #b91c1c; }
-    .btn-danger:hover { background: #991b1b; }
+
+    .container {
+      max-width: 1500px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background: linear-gradient(135deg, #1f3c88, #2952b3);
+      color: white;
+      padding: 24px;
+      border-radius: 14px;
+      margin-bottom: 20px;
+    }
+
+    .header h1 {
+      margin: 0 0 8px;
+    }
+
+    .actions {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+      align-items: center;
+    }
+
+    button {
+      background: #1f3c88;
+      color: white;
+      border: none;
+      padding: 12px 18px;
+      border-radius: 10px;
+      cursor: pointer;
+      font-size: 15px;
+      font-weight: 600;
+    }
+
+    button:hover {
+      background: #162d66;
+    }
+
+    .btn-danger {
+      background: #b91c1c;
+    }
+
+    .btn-danger:hover {
+      background: #991b1b;
+    }
+
     .section {
-      background: white; border-radius: 14px; padding: 20px; margin-bottom: 20px;
+      background: white;
+      border-radius: 14px;
+      padding: 20px;
+      margin-bottom: 20px;
       box-shadow: 0 2px 10px rgba(0,0,0,0.08);
     }
-    .section h2 { margin-top: 0; }
-    .small { font-size: 13px; color: #666; }
-    .table-wrapper { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; min-width: 1350px; }
-    th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
-    th { background: #1f3c88; color: white; }
-    input[type="number"] {
-      width: 100px; padding: 7px; border: 1px solid #ccc; border-radius: 8px; text-align: center;
+
+    .section h2 {
+      margin-top: 0;
     }
-    .linha-total { background: #eef3ff; font-weight: bold; }
-    .positivo { color: #15803d; font-weight: bold; }
-    .negativo { color: #b91c1c; font-weight: bold; }
-    .neutro { color: #555; font-weight: bold; }
+
+    .small {
+      font-size: 13px;
+      color: #666;
+    }
+
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 1350px;
+    }
+
+    th, td {
+      border: 1px solid #ddd;
+      padding: 10px;
+      text-align: center;
+    }
+
+    th {
+      background: #1f3c88;
+      color: white;
+    }
+
+    input[type="text"] {
+      width: 120px;
+      padding: 8px 10px;
+      border: 1px solid #cbd5e1;
+      border-radius: 8px;
+      text-align: right;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .positivo {
+      color: #15803d;
+      font-weight: bold;
+    }
+
+    .negativo {
+      color: #b91c1c;
+      font-weight: bold;
+    }
+
+    .neutro {
+      color: #555;
+      font-weight: bold;
+    }
+
     .status-bar {
-      display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 14px; margin-bottom: 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 14px;
+      margin-bottom: 20px;
     }
+
     .status-card {
-      background: white; padding: 16px; border-radius: 14px; box-shadow: 0 2px 10px rgba(0,0,0,.08);
+      background: white;
+      padding: 16px;
+      border-radius: 14px;
+      box-shadow: 0 2px 10px rgba(0,0,0,.08);
     }
-    .status-card h3 { margin: 0 0 10px; font-size: 16px; color: #666; }
-    .status-card .big { font-size: 28px; font-weight: bold; color: #1f3c88; }
-    .brand-tabs { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
+
+    .status-card h3 {
+      margin: 0 0 10px;
+      font-size: 16px;
+      color: #666;
+    }
+
+    .status-card .big {
+      font-size: 28px;
+      font-weight: bold;
+      color: #1f3c88;
+    }
+
+    .brand-tabs {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 16px;
+      flex-wrap: wrap;
+    }
+
     .brand-tab {
-      padding: 10px 16px; border-radius: 999px; border: 1px solid #cfd8ea; background: #f8faff; cursor: pointer; font-weight: 700;
+      padding: 10px 16px;
+      border-radius: 999px;
+      border: 1px solid #cfd8ea;
+      background: #f8faff;
+      cursor: pointer;
+      font-weight: 700;
+      color: #1f3c88;
     }
-    .brand-tab.active { background: #1f3c88; color: white; border-color: #1f3c88; }
-    .hidden { display: none; }
+
+    .brand-tab.active {
+      background: #1f3c88;
+      color: white;
+      border-color: #1f3c88;
+    }
+
     .hint {
-      background: #fff7ed; border-left: 4px solid #f59e0b; padding: 12px 14px; border-radius: 8px; margin-top: 12px;
+      background: #fff7ed;
+      border-left: 4px solid #f59e0b;
+      padding: 12px 14px;
+      border-radius: 8px;
+      margin-top: 12px;
       font-size: 14px;
+      line-height: 1.5;
     }
+
+    .hint-blue {
+      background: #eff6ff;
+      border-left-color: #2563eb;
+    }
+
     .collapsible-header {
-      display: flex; align-items: center; justify-content: space-between; gap: 12px;
-      cursor: pointer; user-select: none; padding: 4px 0;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      cursor: pointer;
+      user-select: none;
+      padding: 4px 0;
     }
+
     .collapsible-left {
-      display: flex; align-items: center; gap: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
     }
+
     .toggle-icon {
-      width: 28px; height: 28px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center;
-      background: #eef3ff; color: #1f3c88; font-weight: 700; transition: transform .2s ease;
+      width: 28px;
+      height: 28px;
+      border-radius: 999px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: #eef3ff;
+      color: #1f3c88;
+      font-weight: 700;
+      transition: transform .2s ease;
       border: 1px solid #dbe5ff;
     }
-    .collapsible-header.open .toggle-icon { transform: rotate(90deg); }
+
+    .collapsible-header.open .toggle-icon {
+      transform: rotate(90deg);
+    }
+
     .collapsible-content {
-      overflow: hidden; transition: max-height .25s ease, opacity .2s ease, margin-top .2s ease;
-      max-height: 0; opacity: 0; margin-top: 0;
+      overflow: hidden;
+      transition: max-height .25s ease, opacity .2s ease, margin-top .2s ease;
+      max-height: 0;
+      opacity: 0;
+      margin-top: 0;
     }
+
     .collapsible-content.open {
-      max-height: 2000px; opacity: 1; margin-top: 12px;
+      max-height: 5000px;
+      opacity: 1;
+      margin-top: 12px;
     }
+
     .tag-mini {
-      font-size: 12px; color: #5b6b8c; background: #f8faff; border: 1px solid #dbe5ff; border-radius: 999px; padding: 6px 10px;
+      font-size: 12px;
+      color: #5b6b8c;
+      background: #f8faff;
+      border: 1px solid #dbe5ff;
+      border-radius: 999px;
+      padding: 6px 10px;
     }
-    @media (max-width: 768px) { input[type="number"] { width: 88px; } }
+
+    .filtro-mes {
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid #ccc;
+      min-width: 200px;
+    }
+
+    @media (max-width: 768px) {
+      input[type="text"] {
+        width: 95px;
+      }
+
+      .status-card .big {
+        font-size: 22px;
+      }
+    }
   </style>
 </head>
 <body>
   <div class="container">
     <div class="header">
       <h1>Dashboard Comercial - MED & ECOS</h1>
-      <p>Comparativo mensal entre 2025 e 2026, com foco em mês a mês. Os dados ficam salvos no navegador automaticamente.</p>
+      <p>Comparativo mensal entre 2025 e 2026, com foco em mês a mês e acumulado até o mês selecionado. Os dados ficam salvos no navegador automaticamente.</p>
     </div>
 
     <div class="actions">
@@ -108,11 +292,11 @@
 
     <div class="section">
       <h2>Visão Mensal</h2>
-      <p class="small">O dashboard abaixo compara o mês selecionado entre 2025 e 2026. Assim você analisa cada mês separadamente, sem misturar tudo no total anual.</p>
+      <p class="small">O dashboard abaixo compara o mês selecionado entre 2025 e 2026, além do acumulado de janeiro até o mês escolhido.</p>
 
       <div class="actions">
         <label for="mesSelecionado"><strong>Escolha o mês:</strong></label>
-        <select id="mesSelecionado" onchange="calcularDashboard()" style="padding:10px;border-radius:8px;border:1px solid #ccc;">
+        <select id="mesSelecionado" class="filtro-mes" onchange="calcularDashboard()">
           <option value="0">Janeiro</option>
           <option value="1">Fevereiro</option>
           <option value="2">Março</option>
@@ -129,8 +313,8 @@
       </div>
 
       <div class="brand-tabs">
-        <button class="brand-tab active" onclick="selecionarMarca('MED', this)">MED</button>
-        <button class="brand-tab" onclick="selecionarMarca('ECOS', this)">ECOS</button>
+        <button class="brand-tab active" type="button" onclick="selecionarMarca('MED', this)">MED</button>
+        <button class="brand-tab" type="button" onclick="selecionarMarca('ECOS', this)">ECOS</button>
       </div>
 
       <div class="status-bar">
@@ -163,6 +347,7 @@
       </div>
 
       <div class="hint" id="insightMensal">Selecione o mês e preencha os dados para ver o comparativo mensal.</div>
+      <div class="hint hint-blue" id="insightAcumulado">O acumulado até o mês selecionado aparecerá aqui.</div>
     </div>
 
     <div class="section">
@@ -173,26 +358,27 @@
         </div>
         <span class="tag-mini">clique para abrir/fechar</span>
       </div>
+
       <div id="secaoMED" class="collapsible-content">
-      <h2>Base de Dados - MED</h2>
-      <p class="small">Você pode preencher 2025 inteiro como base histórica e ir comparando com 2026 por mês.</p>
-      <div class="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>Mês</th>
-              <th>Vendas 2025</th>
-              <th>Vendas 2026</th>
-              <th>Cancelamentos 2025</th>
-              <th>Cancelamentos 2026</th>
-              <th>% Vendas</th>
-              <th>% Cancel.</th>
-              <th>Taxa 2025</th>
-              <th>Taxa 2026</th>
-            </tr>
-          </thead>
-          <tbody id="tabelaMED"></tbody>
-        </table>
+        <p class="small">Você pode preencher 2025 inteiro como base histórica e ir comparando com 2026 por mês.</p>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Mês</th>
+                <th>Vendas 2025</th>
+                <th>Vendas 2026</th>
+                <th>Cancelamentos 2025</th>
+                <th>Cancelamentos 2026</th>
+                <th>% Vendas</th>
+                <th>% Cancel.</th>
+                <th>Taxa 2025</th>
+                <th>Taxa 2026</th>
+              </tr>
+            </thead>
+            <tbody id="tabelaMED"></tbody>
+          </table>
+        </div>
       </div>
     </div>
 
@@ -204,40 +390,56 @@
         </div>
         <span class="tag-mini">clique para abrir/fechar</span>
       </div>
+
       <div id="secaoECOS" class="collapsible-content">
-      <h2>Base de Dados - ECOS</h2>
-      <p class="small">Mesma lógica da MED, com comparativo mês a mês entre 2025 e 2026.</p>
-      <div class="table-wrapper">
-        <table>
-          <thead>
-            <tr>
-              <th>Mês</th>
-              <th>Vendas 2025</th>
-              <th>Vendas 2026</th>
-              <th>Cancelamentos 2025</th>
-              <th>Cancelamentos 2026</th>
-              <th>% Vendas</th>
-              <th>% Cancel.</th>
-              <th>Taxa 2025</th>
-              <th>Taxa 2026</th>
-            </tr>
-          </thead>
-          <tbody id="tabelaECOS"></tbody>
-        </table>
+        <p class="small">Mesma lógica da MED, com comparativo mês a mês entre 2025 e 2026.</p>
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Mês</th>
+                <th>Vendas 2025</th>
+                <th>Vendas 2026</th>
+                <th>Cancelamentos 2025</th>
+                <th>Cancelamentos 2026</th>
+                <th>% Vendas</th>
+                <th>% Cancel.</th>
+                <th>Taxa 2025</th>
+                <th>Taxa 2026</th>
+              </tr>
+            </thead>
+            <tbody id="tabelaECOS"></tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
 
   <script>
-    const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
+    const meses = [
+      'Janeiro','Fevereiro','Março','Abril','Maio','Junho',
+      'Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'
+    ];
+
     let marcaAtual = 'MED';
 
     function moeda(valor) {
-      return Number(valor || 0).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
+      return Number(valor || 0).toLocaleString('pt-BR', {
+        style: 'currency',
+        currency: 'BRL'
+      });
     }
 
     function numero(id) {
-      return parseFloat(document.getElementById(id)?.value) || 0;
+      const campo = document.getElementById(id);
+      if (!campo) return 0;
+
+      const valor = String(campo.value || '')
+        .replace(/\./g, '')
+        .replace(',', '.')
+        .replace(/[^0-9.-]/g, '');
+
+      return parseFloat(valor) || 0;
     }
 
     function percentual(base, atual) {
@@ -263,6 +465,32 @@
       return valor < 0 ? 'positivo' : 'negativo';
     }
 
+    function formatarCampoMoeda(input) {
+      let valor = (input.value || '').replace(/\D/g, '');
+
+      if (!valor) {
+        input.value = '';
+        return;
+      }
+
+      input.value = (parseInt(valor, 10) / 100).toLocaleString('pt-BR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    function nomeMesMinusculo(indice) {
+      return meses[indice].toLowerCase();
+    }
+
+    function somarAteMes(prefixo, campo, mes) {
+      let total = 0;
+      for (let i = 0; i <= mes; i++) {
+        total += numero(prefixo + '_' + campo + '_' + i);
+      }
+      return total;
+    }
+
     function criarTabela(idTabela, prefixo) {
       const tbody = document.getElementById(idTabela);
       tbody.innerHTML = '';
@@ -271,10 +499,10 @@
         const tr = document.createElement('tr');
         tr.innerHTML = `
           <td>${mes}</td>
-          <td><input type="number" id="${prefixo}_v25_${i}" placeholder="0" min="0"></td>
-          <td><input type="number" id="${prefixo}_v26_${i}" placeholder="0" min="0"></td>
-          <td><input type="number" id="${prefixo}_c25_${i}" placeholder="0" min="0"></td>
-          <td><input type="number" id="${prefixo}_c26_${i}" placeholder="0" min="0"></td>
+          <td><input type="text" inputmode="numeric" id="${prefixo}_v25_${i}" placeholder="0,00"></td>
+          <td><input type="text" inputmode="numeric" id="${prefixo}_v26_${i}" placeholder="0,00"></td>
+          <td><input type="text" inputmode="numeric" id="${prefixo}_c25_${i}" placeholder="0,00"></td>
+          <td><input type="text" inputmode="numeric" id="${prefixo}_c26_${i}" placeholder="0,00"></td>
           <td id="${prefixo}_pv_${i}">0,00%</td>
           <td id="${prefixo}_pc_${i}">0,00%</td>
           <td id="${prefixo}_t25_${i}">0,00%</td>
@@ -309,12 +537,17 @@
     }
 
     function salvarDadosNoNavegador() {
-      const inputs = document.querySelectorAll('input[type="number"], select');
+      const inputs = document.querySelectorAll('input, select');
       const dados = {};
-      inputs.forEach(input => dados[input.id] = input.value);
+
+      inputs.forEach(input => {
+        dados[input.id] = input.value;
+      });
+
       dados.marcaAtual = marcaAtual;
       dados.secaoMEDAberta = document.getElementById('secaoMED').classList.contains('open');
       dados.secaoECOSAberta = document.getElementById('secaoECOS').classList.contains('open');
+
       localStorage.setItem('dashboard_med_ecos_mensal', JSON.stringify(dados));
       document.getElementById('statusSalvamento').textContent = 'Dados salvos no navegador';
     }
@@ -324,6 +557,7 @@
       if (!dadosSalvos) return;
 
       const dados = JSON.parse(dadosSalvos);
+
       Object.keys(dados).forEach(id => {
         const el = document.getElementById(id);
         if (el) el.value = dados[id];
@@ -332,7 +566,9 @@
       if (dados.marcaAtual) {
         marcaAtual = dados.marcaAtual;
         document.querySelectorAll('.brand-tab').forEach(btn => btn.classList.remove('active'));
-        const alvo = Array.from(document.querySelectorAll('.brand-tab')).find(btn => btn.textContent.trim() === marcaAtual);
+        const alvo = Array.from(document.querySelectorAll('.brand-tab')).find(
+          btn => btn.textContent.trim() === marcaAtual
+        );
         if (alvo) alvo.classList.add('active');
       }
 
@@ -346,14 +582,23 @@
     }
 
     function ativarAutoSave() {
-      const campos = document.querySelectorAll('input[type="number"], select');
+      const campos = document.querySelectorAll('input, select');
+
       campos.forEach(campo => {
-        campo.addEventListener('input', () => {
-          atualizarLinhasDaTabela('med');
-          atualizarLinhasDaTabela('ecos');
-          salvarDadosNoNavegador();
-          calcularDashboard();
-        });
+        if (campo.tagName === 'INPUT') {
+          campo.addEventListener('input', (e) => {
+            formatarCampoMoeda(e.target);
+            atualizarLinhasDaTabela('med');
+            atualizarLinhasDaTabela('ecos');
+            salvarDadosNoNavegador();
+            calcularDashboard();
+          });
+
+          campo.addEventListener('blur', (e) => {
+            formatarCampoMoeda(e.target);
+          });
+        }
+
         campo.addEventListener('change', () => {
           atualizarLinhasDaTabela('med');
           atualizarLinhasDaTabela('ecos');
@@ -365,6 +610,7 @@
 
     function selecionarMarca(marca, botao) {
       marcaAtual = marca;
+
       document.querySelectorAll('.brand-tab').forEach(btn => btn.classList.remove('active'));
       botao.classList.add('active');
 
@@ -384,13 +630,18 @@
       atualizarLinhasDaTabela('med');
       atualizarLinhasDaTabela('ecos');
 
-      const mes = parseInt(document.getElementById('mesSelecionado').value || '0');
+      const mes = parseInt(document.getElementById('mesSelecionado').value || '0', 10);
       const prefixo = marcaAtual === 'MED' ? 'med' : 'ecos';
 
       const v25 = numero(`${prefixo}_v25_${mes}`);
       const v26 = numero(`${prefixo}_v26_${mes}`);
       const c25 = numero(`${prefixo}_c25_${mes}`);
       const c26 = numero(`${prefixo}_c26_${mes}`);
+
+      const av25 = somarAteMes(prefixo, 'v25', mes);
+      const av26 = somarAteMes(prefixo, 'v26', mes);
+      const ac25 = somarAteMes(prefixo, 'c25', mes);
+      const ac26 = somarAteMes(prefixo, 'c26', mes);
 
       const varV = percentualNumero(v25, v26);
       const varC = percentualNumero(c25, c26);
@@ -406,33 +657,39 @@
       document.getElementById('cardTaxa2026').textContent = taxa(c26, v26);
 
       const elVarV = document.getElementById('cardVarVendas');
-      elVarV.textContent = `Variação: ${percentual(v25, v26)}`;
+      elVarV.textContent = 'Variação no mês: ' + percentual(v25, v26);
       elVarV.className = classeVariacao(varV, false);
 
       const elVarC = document.getElementById('cardVarCancel');
-      elVarC.textContent = `Variação: ${percentual(c25, c26)}`;
+      elVarC.textContent = 'Variação no mês: ' + percentual(c25, c26);
       elVarC.className = classeVariacao(varC, true);
 
-      let insight = '';
-      if (v26 > v25 && c26 <= c25) {
-        insight = `${marcaAtual} em ${meses[mes]} está melhor que 2025: venda subiu e cancelamento caiu ou manteve.`;
-      } else if (v26 > v25 && c26 > c25) {
-        insight = `${marcaAtual} em ${meses[mes]} vendeu mais que 2025, mas o cancelamento também subiu. Vale revisar a qualidade da venda.`;
-      } else if (v26 < v25 && c26 > c25) {
-        insight = `${marcaAtual} em ${meses[mes]} está em alerta: vendeu menos e cancelou mais que em 2025.`;
-      } else if (v26 < v25 && c26 <= c25) {
-        insight = `${marcaAtual} em ${meses[mes]} teve queda de venda frente a 2025, mas pelo menos o cancelamento não piorou.`;
-      } else {
-        insight = `Preencha os valores de ${meses[mes]} para comparar ${marcaAtual} entre 2025 e 2026.`;
-      }
+      const insightMensal =
+        marcaAtual + ' em ' + nomeMesMinusculo(mes) +
+        ' vendeu ' + moeda(v26) + ' em 2026, contra ' + moeda(v25) +
+        ' em 2025, com variação de ' + percentual(v25, v26) +
+        '. Nos cancelamentos, ' + marcaAtual + ' teve ' + moeda(c26) +
+        ' em 2026, contra ' + moeda(c25) +
+        ' em 2025, com taxa de cancelamento de ' + taxa(c26, v26) + ' em 2026.';
 
-      document.getElementById('insightMensal').textContent = insight;
+      const insightAcumulado =
+        'No acumulado de janeiro até ' + nomeMesMinusculo(mes) + ', ' +
+        marcaAtual + ' vendeu ' + moeda(av26) + ' em 2026, contra ' +
+        moeda(av25) + ' em 2025, com variação de ' + percentual(av25, av26) +
+        '. No mesmo período, os cancelamentos somaram ' + moeda(ac26) +
+        ' em 2026, contra ' + moeda(ac25) +
+        ' em 2025, com taxa acumulada de ' + taxa(ac26, av26) + '.';
+
+      document.getElementById('insightMensal').textContent = insightMensal;
+      document.getElementById('insightAcumulado').textContent = insightAcumulado;
+
       salvarDadosNoNavegador();
     }
 
     function setSecaoAberta(id, headerId, aberta) {
       const el = document.getElementById(id);
       const header = document.getElementById(headerId);
+
       el.classList.toggle('open', aberta);
       header.classList.toggle('open', aberta);
     }
@@ -441,15 +698,19 @@
       const el = document.getElementById(id);
       const header = document.getElementById(headerId);
       const aberta = !el.classList.contains('open');
+
       el.classList.toggle('open', aberta);
       header.classList.toggle('open', aberta);
+
       salvarDadosNoNavegador();
     }
 
     criarTabela('tabelaMED', 'med');
     criarTabela('tabelaECOS', 'ecos');
+
     setSecaoAberta('secaoMED', 'headerSecaoMED', false);
     setSecaoAberta('secaoECOS', 'headerSecaoECOS', false);
+
     carregarDadosDoNavegador();
     ativarAutoSave();
     calcularDashboard();
