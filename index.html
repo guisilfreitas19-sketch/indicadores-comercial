@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PACS v2.5 | Business Intelligence</title>
+  <title>PACS v2.6 | Business Intelligence</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -15,7 +15,6 @@
       --border: #e9edf7;
       --good: #05cd99;
       --bad: #ee5d50;
-      --warning: #ffb800;
     }
 
     * { box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
@@ -25,7 +24,7 @@
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
     .header-info h1 { margin: 0; font-size: 28px; font-weight: 800; }
     .header-info p { margin: 5px 0 0; font-size: 14px; color: var(--muted); font-weight: 600; }
-    #statusBadge { padding: 4px 12px; border-radius: 20px; font-size: 12px; margin-left: 10px; text-transform: uppercase; }
+    #statusBadge { padding: 4px 12px; border-radius: 20px; font-size: 12px; margin-left: 10px; text-transform: uppercase; color: white; }
 
     .top-controls { display: flex; gap: 15px; align-items: center; }
     .brand-selector { background: #e9edf7; padding: 5px; border-radius: 12px; display: flex; gap: 5px; }
@@ -35,27 +34,9 @@
     select { padding: 10px; border-radius: 12px; border: 1px solid var(--border); background: #fff; font-weight: 700; cursor: pointer; }
 
     .grid-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
-    .card-stat { 
-      background: var(--card); 
-      padding: 22px; 
-      border-radius: 20px; 
-      box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.12); 
-      border: 2px solid transparent;
-      transition: all 0.3s ease;
-    }
-    
-    /* Alerta de Churn Alto */
-    .alerta-churn {
-      border-color: var(--bad) !important;
-      background: #fffafa;
-      animation: pulseAlert 2s infinite;
-    }
-
-    @keyframes pulseAlert {
-      0% { box-shadow: 0px 18px 40px rgba(238, 93, 80, 0.12); }
-      50% { box-shadow: 0px 18px 40px rgba(238, 93, 80, 0.35); }
-      100% { box-shadow: 0px 18px 40px rgba(238, 93, 80, 0.12); }
-    }
+    .card-stat { background: var(--card); padding: 22px; border-radius: 20px; box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.12); border: 2px solid transparent; }
+    .alerta-churn { border-color: var(--bad) !important; background: #fffafa; animation: pulseAlert 2s infinite; }
+    @keyframes pulseAlert { 0%, 100% { box-shadow: 0px 18px 40px rgba(238, 93, 80, 0.12); } 50% { box-shadow: 0px 18px 40px rgba(238, 93, 80, 0.35); } }
 
     .card-stat h3 { margin: 0 0 15px 0; font-size: 13px; color: var(--muted); text-transform: uppercase; }
     .card-stat .value { font-size: 28px; font-weight: 800; }
@@ -72,11 +53,12 @@
     table { width: 100%; border-collapse: collapse; }
     th { text-align: center; padding: 15px; color: var(--muted); font-size: 12px; border-bottom: 1px solid var(--border); }
     td { padding: 10px; border-bottom: 1px solid var(--border); text-align: center; }
-    input.valor { width: 125px; padding: 8px; border: 1px solid var(--border); border-radius: 8px; text-align: right; font-weight: 700; }
-    input.travado-2025 { background: #f4f7fe; color: #707eae; cursor: not-allowed; border: none; }
+    
+    input.valor { width: 125px; padding: 8px; border: 1px solid var(--border); border-radius: 8px; text-align: right; font-weight: 700; background: #fff; }
+    input.travado { background: #f4f7fe !important; color: #707eae !important; cursor: not-allowed !important; border: 1px dashed var(--border) !important; }
+    
     .positivo { color: var(--good); }
     .negativo { color: var(--bad); }
-    .warning { color: var(--warning); }
   </style>
 </head>
 <body>
@@ -84,7 +66,7 @@
 <div class="container">
   <div class="header">
     <div class="header-info">
-      <h1>PACS v2.5 <span id="statusBadge">Carregando...</span></h1>
+      <h1>PACS v2.6 <span id="statusBadge">Saudável</span></h1>
       <p>Performance: <span id="labelFoco">MED</span> | <span id="labelMes">...</span></p>
     </div>
     <div class="top-controls">
@@ -103,20 +85,17 @@
       <div class="value" id="valVenda26">R$ 0,00</div>
       <div class="variation" id="varVendaMes">0%</div>
     </div>
-
     <div class="card-stat" id="cardCancel">
       <h3>Cancelamentos</h3>
       <span class="compare-label">2025: <b id="valCancel25">R$ 0,00</b></span>
       <div class="value" id="valCancel26">R$ 0,00</div>
       <div class="variation" id="varCancelMes">0%</div>
     </div>
-
     <div class="card-stat">
       <h3>Venda Acumulada</h3>
       <span class="compare-label">2025: <b id="valVendaAcum25">R$ 0,00</b></span>
       <div class="value" id="valVendaAcum26" style="color: var(--primary);">R$ 0,00</div>
     </div>
-
     <div class="card-stat">
       <h3>Cancel. Acumulado</h3>
       <span class="compare-label">2025: <b id="valCancelAcum25">R$ 0,00</b></span>
@@ -126,7 +105,7 @@
 
   <div id="secaoDados" class="collapsible-section">
     <div class="collapsible-trigger" onclick="toggleCollapsible()">
-      <h2>📊 Base de Dados Detalhada</h2>
+      <h2>📊 Base de Dados Detalhada (Jan-Mar Bloqueados)</h2>
       <div class="arrow-icon">▼</div>
     </div>
     <div class="collapsible-content">
@@ -166,7 +145,7 @@
 
   const sel = document.getElementById('mesSelecionado');
   mesesFull.forEach((m, i) => sel.add(new Option(m, i)));
-  sel.value = new Date().getMonth();
+  sel.value = 3; // Inicia em Abril
 
   window.toggleCollapsible = () => {
     secaoAberta = !secaoAberta;
@@ -215,13 +194,16 @@
       const v26Val = dadosCache[marcaAtiva][`v26_${i}`] || '';
       const c26Val = dadosCache[marcaAtiva][`c26_${i}`] || '';
       
+      // Bloqueia 01, 02 e 03 (índices 0, 1, 2)
+      const isBloqueado = i < 3 ? 'readonly class="valor travado"' : 'class="valor"';
+      
       corpo.innerHTML += `
         <tr>
           <td><b>${m.substring(0,3)}</b></td>
-          <td><input class="valor travado-2025" value="${v25.toLocaleString('pt-BR',{minimumFractionDigits:2})}" readonly></td>
-          <td><input class="valor" id="v26_${i}" oninput="maskMoney(this)" value="${v26Val}"></td>
-          <td><input class="valor travado-2025" value="${c25.toLocaleString('pt-BR',{minimumFractionDigits:2})}" readonly></td>
-          <td><input class="valor" id="c26_${i}" oninput="maskMoney(this)" value="${c26Val}"></td>
+          <td><input class="valor travado" value="${v25.toLocaleString('pt-BR',{minimumFractionDigits:2})}" readonly></td>
+          <td><input ${isBloqueado} id="v26_${i}" oninput="maskMoney(this)" value="${v26Val}"></td>
+          <td><input class="valor travado" value="${c25.toLocaleString('pt-BR',{minimumFractionDigits:2})}" readonly></td>
+          <td><input ${isBloqueado} id="c26_${i}" oninput="maskMoney(this)" value="${c26Val}"></td>
           <td id="rowVar_${i}" style="font-weight:700">0%</td>
           <td id="rowTaxa_${i}" style="font-weight:700">0%</td>
         </tr>`;
@@ -256,7 +238,6 @@
     const cMes26 = getVal(`c26_${mesIdx}`);
     const churnAtual = vMes26 > 0 ? (cMes26 / vMes26 * 100) : 0;
 
-    // Lógica de Alerta nos Cards
     const cardCancel = document.getElementById('cardCancel');
     const badge = document.getElementById('statusBadge');
 
@@ -264,12 +245,10 @@
       cardCancel.classList.add('alerta-churn');
       badge.textContent = 'Atenção Churn';
       badge.style.background = 'var(--bad)';
-      badge.style.color = 'white';
     } else {
       cardCancel.classList.remove('alerta-churn');
-      badge.textContent = 'Operação Saudável';
+      badge.textContent = 'Saudável';
       badge.style.background = 'var(--good)';
-      badge.style.color = 'white';
     }
 
     document.getElementById('valVenda25').textContent = format(dados2025[marcaAtiva].v[mesIdx]);
