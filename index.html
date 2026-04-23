@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PACS v2.6 | Business Intelligence</title>
+  <title>PACS v2.7 | Business Intelligence</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
@@ -24,7 +24,7 @@
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
     .header-info h1 { margin: 0; font-size: 28px; font-weight: 800; }
     .header-info p { margin: 5px 0 0; font-size: 14px; color: var(--muted); font-weight: 600; }
-    #statusBadge { padding: 4px 12px; border-radius: 20px; font-size: 12px; margin-left: 10px; text-transform: uppercase; color: white; }
+    #statusBadge { padding: 4px 12px; border-radius: 20px; font-size: 12px; margin-left: 10px; text-transform: uppercase; color: white; font-weight: 800; }
 
     .top-controls { display: flex; gap: 15px; align-items: center; }
     .brand-selector { background: #e9edf7; padding: 5px; border-radius: 12px; display: flex; gap: 5px; }
@@ -34,14 +34,14 @@
     select { padding: 10px; border-radius: 12px; border: 1px solid var(--border); background: #fff; font-weight: 700; cursor: pointer; }
 
     .grid-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 30px; }
-    .card-stat { background: var(--card); padding: 22px; border-radius: 20px; box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.12); border: 2px solid transparent; }
+    .card-stat { background: var(--card); padding: 22px; border-radius: 20px; box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.12); border: 2px solid transparent; transition: 0.3s; }
     .alerta-churn { border-color: var(--bad) !important; background: #fffafa; animation: pulseAlert 2s infinite; }
     @keyframes pulseAlert { 0%, 100% { box-shadow: 0px 18px 40px rgba(238, 93, 80, 0.12); } 50% { box-shadow: 0px 18px 40px rgba(238, 93, 80, 0.35); } }
 
-    .card-stat h3 { margin: 0 0 15px 0; font-size: 13px; color: var(--muted); text-transform: uppercase; }
-    .card-stat .value { font-size: 28px; font-weight: 800; }
-    .compare-label { font-size: 13px; color: var(--muted); margin-bottom: 4px; display: block; }
-    .variation { font-size: 14px; font-weight: 700; margin-top: 12px; display: flex; align-items: center; gap: 5px; }
+    .card-stat h3 { margin: 0 0 15px 0; font-size: 13px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+    .card-stat .value { font-size: 28px; font-weight: 800; margin-bottom: 5px; }
+    .compare-label { font-size: 12px; color: var(--muted); margin-bottom: 8px; display: block; font-weight: 600; }
+    .variation { font-size: 14px; font-weight: 800; display: flex; align-items: center; gap: 5px; }
 
     .collapsible-section { background: var(--card); border-radius: 20px; margin-bottom: 20px; box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.08); }
     .collapsible-trigger { padding: 20px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
@@ -52,9 +52,9 @@
 
     table { width: 100%; border-collapse: collapse; }
     th { text-align: center; padding: 15px; color: var(--muted); font-size: 12px; border-bottom: 1px solid var(--border); }
-    td { padding: 10px; border-bottom: 1px solid var(--border); text-align: center; }
+    td { padding: 10px; border-bottom: 1px solid var(--border); text-align: center; font-weight: 600; }
     
-    input.valor { width: 125px; padding: 8px; border: 1px solid var(--border); border-radius: 8px; text-align: right; font-weight: 700; background: #fff; }
+    input.valor { width: 130px; padding: 8px; border: 1px solid var(--border); border-radius: 8px; text-align: right; font-weight: 700; background: #fff; }
     input.travado { background: #f4f7fe !important; color: #707eae !important; cursor: not-allowed !important; border: 1px dashed var(--border) !important; }
     
     .positivo { color: var(--good); }
@@ -66,7 +66,7 @@
 <div class="container">
   <div class="header">
     <div class="header-info">
-      <h1>PACS v2.6 <span id="statusBadge">Saudável</span></h1>
+      <h1>PACS v2.7 <span id="statusBadge">ANALISANDO</span></h1>
       <p>Performance: <span id="labelFoco">MED</span> | <span id="labelMes">...</span></p>
     </div>
     <div class="top-controls">
@@ -105,12 +105,12 @@
 
   <div id="secaoDados" class="collapsible-section">
     <div class="collapsible-trigger" onclick="toggleCollapsible()">
-      <h2>📊 Base de Dados Detalhada (Jan-Mar Bloqueados)</h2>
+      <h2>📊 Base de Dados</h2>
       <div class="arrow-icon">▼</div>
     </div>
     <div class="collapsible-content">
       <table>
-        <thead><tr><th>Mês</th><th>Vendas 25</th><th>Vendas 26</th><th>Canc. 25</th><th>Canc. 26</th><th>Var %</th><th>Churn %</th></tr></thead>
+        <thead><tr><th>Mês</th><th>Vendas 25</th><th>Vendas 26</th><th>Canc. 25</th><th>Canc. 26</th><th>Crescimento</th><th>Churn</th></tr></thead>
         <tbody id="tabelaCorpo"></tbody>
       </table>
     </div>
@@ -145,7 +145,7 @@
 
   const sel = document.getElementById('mesSelecionado');
   mesesFull.forEach((m, i) => sel.add(new Option(m, i)));
-  sel.value = 3; // Inicia em Abril
+  sel.value = 3; 
 
   window.toggleCollapsible = () => {
     secaoAberta = !secaoAberta;
@@ -193,8 +193,6 @@
       const c25 = dados2025[marcaAtiva].c[i];
       const v26Val = dadosCache[marcaAtiva][`v26_${i}`] || '';
       const c26Val = dadosCache[marcaAtiva][`c26_${i}`] || '';
-      
-      // Bloqueia 01, 02 e 03 (índices 0, 1, 2)
       const isBloqueado = i < 3 ? 'readonly class="valor travado"' : 'class="valor"';
       
       corpo.innerHTML += `
@@ -204,8 +202,8 @@
           <td><input ${isBloqueado} id="v26_${i}" oninput="maskMoney(this)" value="${v26Val}"></td>
           <td><input class="valor travado" value="${c25.toLocaleString('pt-BR',{minimumFractionDigits:2})}" readonly></td>
           <td><input ${isBloqueado} id="c26_${i}" oninput="maskMoney(this)" value="${c26Val}"></td>
-          <td id="rowVar_${i}" style="font-weight:700">0%</td>
-          <td id="rowTaxa_${i}" style="font-weight:700">0%</td>
+          <td id="rowVar_${i}">0%</td>
+          <td id="rowTaxa_${i}">0%</td>
         </tr>`;
     });
   }
@@ -221,6 +219,7 @@
       const c25 = dados2025[marcaAtiva].c[i];
       const v26 = getVal(`v26_${i}`);
       const c26 = getVal(`c26_${i}`);
+      
       if(i <= mesIdx) { aV26 += v26; aC26 += c26; aV25 += v25; aC25 += c25; }
       
       const cresc = v25 > 0 ? ((v26 - v25) / v25 * 100).toFixed(1) : 0;
@@ -232,29 +231,37 @@
       const elChurn = document.getElementById(`rowTaxa_${i}`);
       elChurn.textContent = taxaChurn + '%';
       elChurn.className = taxaChurn > 15 ? 'negativo' : 'positivo';
+
+      // Atualiza os cards principais se for o mês selecionado
+      if (i === mesIdx) {
+        const elVarMes = document.getElementById('varVendaMes');
+        elVarMes.textContent = (cresc > 0 ? '+' : '') + cresc + '%';
+        elVarMes.className = 'variation ' + (cresc >= 0 ? 'positivo' : 'negativo');
+
+        const crescCancel = c25 > 0 ? ((c26 - c25) / c25 * 100).toFixed(1) : 0;
+        const elVarCan = document.getElementById('varCancelMes');
+        elVarCan.textContent = (crescCancel > 0 ? '+' : '') + crescCancel + '%';
+        elVarCan.className = 'variation ' + (crescCancel <= 0 ? 'positivo' : 'negativo');
+
+        // Status de Churn
+        const cardCancel = document.getElementById('cardCancel');
+        const badge = document.getElementById('statusBadge');
+        if (taxaChurn > 15) {
+          cardCancel.classList.add('alerta-churn');
+          badge.textContent = 'ATENÇÃO CHURN';
+          badge.style.background = 'var(--bad)';
+        } else {
+          cardCancel.classList.remove('alerta-churn');
+          badge.textContent = 'SAUDÁVEL';
+          badge.style.background = 'var(--good)';
+        }
+      }
     });
 
-    const vMes26 = getVal(`v26_${mesIdx}`);
-    const cMes26 = getVal(`c26_${mesIdx}`);
-    const churnAtual = vMes26 > 0 ? (cMes26 / vMes26 * 100) : 0;
-
-    const cardCancel = document.getElementById('cardCancel');
-    const badge = document.getElementById('statusBadge');
-
-    if (churnAtual > 15) {
-      cardCancel.classList.add('alerta-churn');
-      badge.textContent = 'Atenção Churn';
-      badge.style.background = 'var(--bad)';
-    } else {
-      cardCancel.classList.remove('alerta-churn');
-      badge.textContent = 'Saudável';
-      badge.style.background = 'var(--good)';
-    }
-
     document.getElementById('valVenda25').textContent = format(dados2025[marcaAtiva].v[mesIdx]);
-    document.getElementById('valVenda26').textContent = format(vMes26);
+    document.getElementById('valVenda26').textContent = format(getVal(`v26_${mesIdx}`));
     document.getElementById('valCancel25').textContent = format(dados2025[marcaAtiva].c[mesIdx]);
-    document.getElementById('valCancel26').textContent = format(cMes26);
+    document.getElementById('valCancel26').textContent = format(getVal(`c26_${mesIdx}`));
     document.getElementById('valVendaAcum25').textContent = format(aV25);
     document.getElementById('valVendaAcum26').textContent = format(aV26);
     document.getElementById('valCancelAcum25').textContent = format(aC25);
