@@ -5,55 +5,64 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Dashboard Comercial - MED & ECOS | v2.9</title>
   <style>
-    * { box-sizing: border-box; font-family: Arial, sans-serif; }
-    body { margin: 0; padding: 20px; background: #f4f6f9; color: #333; }
-    .container { max-width: 1500px; margin: 0 auto; }
-    .header { background: linear-gradient(135deg, #1f3c88, #2952b3); color: white; padding: 24px; border-radius: 14px; margin-bottom: 20px; }
-    .header h1 { margin: 0 0 8px; }
-    .version { display: inline-block; margin-top: 8px; padding: 6px 10px; border-radius: 999px; background: rgba(255,255,255,.18); font-size: 12px; font-weight: 700; }
-    .actions { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 20px; align-items: center; }
-    button { background: #1f3c88; color: white; border: none; padding: 12px 18px; border-radius: 10px; cursor: pointer; font-size: 15px; font-weight: 600; }
-    button:hover { background: #162d66; }
-    .btn-secondary { background: #475569; }
-    .btn-secondary:hover { background: #334155; }
-    .section { background: white; border-radius: 14px; padding: 20px; margin-bottom: 20px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); }
-    .small { font-size: 13px; color: #666; }
-    .table-wrapper { overflow-x: auto; }
-    table { width: 100%; border-collapse: collapse; min-width: 1350px; }
-    th, td { border: 1px solid #ddd; padding: 10px; text-align: center; }
-    th { background: #1f3c88; color: white; }
-    input[type="text"], select { padding: 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 14px; }
-    input.valor { width: 120px; text-align: right; font-variant-numeric: tabular-nums; }
-    input.travado-2025 {
-      background: #f1f5f9;
-      color: #475569;
-      border-color: #cbd5e1;
-      cursor: not-allowed;
-      font-weight: 700;
-    }
-    .positivo { color: #15803d; font-weight: bold; }
-    .negativo { color: #b91c1c; font-weight: bold; }
-    .neutro { color: #555; font-weight: bold; }
-    .status-bar { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 14px; margin-bottom: 20px; }
-    .status-card { background: white; padding: 16px; border-radius: 14px; box-shadow: 0 2px 10px rgba(0,0,0,.08); }
-    .status-card h3 { margin: 0 0 10px; font-size: 16px; color: #666; }
-    .status-card .big { font-size: 28px; font-weight: bold; color: #1f3c88; }
-    .brand-tabs { display: flex; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
-    .brand-tab { padding: 10px 16px; border-radius: 999px; border: 1px solid #cfd8ea; background: #f8faff; cursor: pointer; font-weight: 700; color: #1f3c88; }
-    .brand-tab.active { background: #1f3c88; color: white; border-color: #1f3c88; }
-    .collapsible-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; cursor: pointer; user-select: none; padding: 4px 0; }
-    .collapsible-left { display: flex; align-items: center; gap: 10px; }
-    .toggle-icon { width: 28px; height: 28px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center; background: #eef3ff; color: #1f3c88; font-weight: 700; transition: transform .2s ease; border: 1px solid #dbe5ff; }
-    .collapsible-header.open .toggle-icon { transform: rotate(90deg); }
-    .collapsible-content { overflow: hidden; transition: max-height .25s ease, opacity .2s ease, margin-top .2s ease; max-height: 0; opacity: 0; margin-top: 0; }
-    .collapsible-content.open { max-height: 5000px; opacity: 1; margin-top: 12px; }
-    .tag-mini { font-size: 12px; color: #5b6b8c; background: #f8faff; border: 1px solid #dbe5ff; border-radius: 999px; padding: 6px 10px; }
-    .muted-box { background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 12px 14px; color: #475569; }
-    @media (max-width: 768px) {
-      input.valor { width: 95px; }
-      .status-card .big { font-size: 22px; }
-    }
-  </style>
+  :root{
+    --bg:#f5f7fb; --card:#ffffff; --primary:#1f3c88; --primary-2:#2952b3;
+    --text:#0f172a; --muted:#64748b; --border:#e5e7eb; --good:#16a34a; --bad:#dc2626;
+  }
+  *{box-sizing:border-box;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+  body{margin:0;padding:18px;background:linear-gradient(180deg,#f8fafc, #eef2f7);color:var(--text)}
+  .container{max-width:1400px;margin:0 auto}
+  .header{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;padding:18px 20px;border-radius:16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+  .header h1{margin:0;font-size:20px;letter-spacing:.2px}
+  .header p{margin:4px 0 0;font-size:12px;opacity:.9}
+  .version{margin-left:12px;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.18);font-size:11px;font-weight:700}
+
+  /* esconder elementos que poluem, sem remover funcionalidade */
+  .actions{display:none}
+  #statusSalvamento{display:none}
+
+  .section{background:var(--card);border-radius:16px;padding:16px 16px;margin:12px 0;box-shadow:0 8px 20px rgba(2,6,23,.06)}
+  .small{font-size:12px;color:var(--muted)}
+
+  .controls{display:flex;gap:12px;align-items:center;margin-bottom:10px}
+  select{padding:8px 10px;border:1px solid var(--border);border-radius:10px;background:#fff}
+
+  .brand-tabs{display:flex;gap:8px;margin:6px 0 10px}
+  .brand-tab{padding:6px 12px;border-radius:999px;border:1px solid var(--border);background:#f1f5f9;cursor:pointer;font-weight:700;color:#0f172a}
+  .brand-tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
+
+  .status-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
+  .status-card{background:#fff;padding:12px;border-radius:14px;border:1px solid var(--border)}
+  .status-card h3{margin:0 0 6px;font-size:12px;color:var(--muted);font-weight:600}
+  .status-card .big{font-size:22px;font-weight:800;color:#0b2a6b}
+
+  .positivo{color:var(--good);font-weight:700}
+  .negativo{color:var(--bad);font-weight:700}
+  .neutro{color:#475569;font-weight:700}
+
+  .table-wrapper{overflow-x:auto}
+  table{width:100%;border-collapse:separate;border-spacing:0;min-width:1200px}
+  th,td{border-bottom:1px solid var(--border);padding:10px;text-align:center}
+  th{background:#0b2a6b;color:#fff;position:sticky;top:0}
+  tr:nth-child(even) td{background:#fafafa}
+
+  input[type="text"]{padding:8px;border:1px solid var(--border);border-radius:10px}
+  input.valor{width:110px;text-align:right}
+  input.travado-2025{background:#eef2f7;color:#475569;border-color:#e2e8f0;cursor:not-allowed;font-weight:700}
+
+  .collapsible-header{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;padding:4px 2px}
+  .collapsible-left{display:flex;align-items:center;gap:8px}
+  .toggle-icon{width:26px;height:26px;border-radius:999px;display:inline-flex;align-items:center;justify-content:center;background:#eef3ff;color:var(--primary);font-weight:800;border:1px solid #dbe5ff}
+  .collapsible-header.open .toggle-icon{transform:rotate(90deg)}
+  .collapsible-content{overflow:hidden;transition:max-height .25s ease,opacity .2s ease,margin-top .2s ease;max-height:0;opacity:0;margin-top:0}
+  .collapsible-content.open{max-height:5000px;opacity:1;margin-top:10px}
+  .tag-mini{font-size:11px;color:#64748b;background:#f8faff;border:1px solid #e2e8f0;border-radius:999px;padding:4px 8px}
+
+  @media (max-width:768px){
+    .header{flex-direction:column;align-items:flex-start}
+    .status-card .big{font-size:18px}
+  }
+</style>
 </head>
 <body>
   <div class="container">
