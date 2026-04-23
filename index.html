@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard Comercial - MED & ECOS | v2.9</title>
+  <title>Dashboard Comercial | v3.1</title>
   <style>
   :root{
     --bg:#f5f7fb; --card:#ffffff; --primary:#1f3c88; --primary-2:#2952b3;
@@ -12,8 +12,8 @@
   *{box-sizing:border-box;font-family:Inter,system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
   body{margin:0;padding:18px;background:linear-gradient(180deg,#f8fafc, #eef2f7);color:var(--text)}
   .container{max-width:1400px;margin:0 auto}
-  .header{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;padding:18px 20px;border-radius:16px;margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
-  .header h1{margin:0;font-size:20px;letter-spacing:.2px}
+  .header{background:linear-gradient(135deg,var(--primary),var(--primary-2));color:#fff;padding:16px 18px;border-radius:18px;margin-bottom:16px;display:flex;align-items:center;justify-content:space-between;box-shadow:0 14px 30px rgba(31,60,136,.18)}
+  .header h1{margin:0;font-size:22px;letter-spacing:-.01em}
   .header p{margin:4px 0 0;font-size:12px;opacity:.9}
   .version{margin-left:12px;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.18);font-size:11px;font-weight:700}
 
@@ -23,7 +23,7 @@
   /* status oculto visualmente mas funcional */
   #statusSalvamento{display:none}
 
-  .section{background:var(--card);border-radius:16px;padding:16px 16px;margin:12px 0;box-shadow:0 8px 20px rgba(2,6,23,.06)}
+  .section{background:var(--card);border-radius:18px;padding:18px;margin:14px 0;box-shadow:0 10px 24px rgba(2,6,23,.06)}
   .small{font-size:12px;color:var(--muted)}
 
   .controls{display:flex;gap:12px;align-items:center;margin-bottom:10px}
@@ -34,9 +34,9 @@
   .brand-tab.active{background:var(--primary);color:#fff;border-color:var(--primary)}
 
   .status-bar{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:10px}
-  .status-card{background:#fff;padding:12px;border-radius:14px;border:1px solid var(--border)}
+  .status-card{background:linear-gradient(180deg,#ffffff,#f8fbff);padding:14px;border-radius:16px;border:1px solid var(--border);box-shadow:0 6px 14px rgba(15,23,42,.05)}
   .status-card h3{margin:0 0 6px;font-size:12px;color:var(--muted);font-weight:600}
-  .status-card .big{font-size:22px;font-weight:800;color:#0b2a6b}
+  .status-card .big{font-size:24px;font-weight:800;color:#0b2a6b;letter-spacing:-.02em}
 
   .positivo{color:var(--good);font-weight:700}
   .negativo{color:var(--bad);font-weight:700}
@@ -88,28 +88,17 @@
 <body>
   <div class="container">
     <div class="header">
-      <h1>Dashboard Comercial - MED & ECOS</h1>
+      <h1>Dashboard Comercial · Resumo Executivo</h1>
       
-      <span class="version">Versão 2.9</span>
+      <span class="version">Versão 3.1</span>
     </div>
 
     <div class="actions">
       <button onclick="calcularDashboard()">Atualizar Dashboard</button>
-      <button class="btn-secondary" onclick="forcarRegravacao2025()">Forçar dados 2025 no Firebase</button>
     </div>
 
     <div class="status-bar">
-      <div class="status-card">
-        <h3>Mês selecionado</h3>
-        <div class="big" id="mesSelecionadoLabel">Janeiro</div>
-      </div>
-      <div class="status-card">
-        <h3>Marca em análise</h3>
-        <div class="big" id="marcaSelecionadaLabel">MED</div>
-      </div>
-      <div class="status-card">
-        <h3>Status</h3>
-        <div class="big" style="font-size:18px;" id="statusSalvamento">Aguardando ação</div>
+      
       </div>
     </div>
 
@@ -118,7 +107,7 @@
       
       
       <div class="actions">
-        <label for="mesSelecionado"><strong>Escolha o mês:</strong></label>
+        <label for="mesSelecionado"><strong>Mês:</strong></label>
         <select id="mesSelecionado" onchange="calcularDashboard()">
           <option value="0">Janeiro</option>
           <option value="1">Fevereiro</option>
@@ -141,14 +130,14 @@
       </div>
 
       <div class="status-bar">
-        <div class="status-card"><h3>Vendas 2025</h3><div class="big" id="cardVendas2025">R$ 0,00</div></div>
-        <div class="status-card"><h3>Vendas 2026</h3><div class="big" id="cardVendas2026">R$ 0,00</div><div id="cardVarVendas"></div></div>
-        <div class="status-card"><h3>Cancelamentos 2025</h3><div class="big" id="cardCancel2025">R$ 0,00</div></div>
-        <div class="status-card"><h3>Cancelamentos 2026</h3><div class="big" id="cardCancel2026">R$ 0,00</div><div id="cardVarCancel"></div></div>
-        <div class="status-card"><h3>Acumulado Vendas 2025</h3><div class="big" id="cardAcumVendas2025">R$ 0,00</div></div>
-        <div class="status-card"><h3>Acumulado Vendas 2026</h3><div class="big" id="cardAcumVendas2026">R$ 0,00</div></div>
-        <div class="status-card"><h3>Acumulado Cancel. 2025</h3><div class="big" id="cardAcumCancel2025">R$ 0,00</div></div>
-        <div class="status-card"><h3>Acumulado Cancel. 2026</h3><div class="big" id="cardAcumCancel2026">R$ 0,00</div></div>
+        <div class="status-card"><h3>Venda Mês 2025</h3><div class="big" id="cardVendas2025">R$ 0,00</div></div>
+        <div class="status-card"><h3>Venda Mês 2026</h3><div class="big" id="cardVendas2026">R$ 0,00</div><div id="cardVarVendas"></div></div>
+        <div class="status-card"><h3>Cancel. Mês 2025</h3><div class="big" id="cardCancel2025">R$ 0,00</div></div>
+        <div class="status-card"><h3>Cancel. Mês 2026</h3><div class="big" id="cardCancel2026">R$ 0,00</div><div id="cardVarCancel"></div></div>
+        <div class="status-card"><h3>Venda Acum. 2025</h3><div class="big" id="cardAcumVendas2025">R$ 0,00</div></div>
+        <div class="status-card"><h3>Venda Acum. 2026</h3><div class="big" id="cardAcumVendas2026">R$ 0,00</div></div>
+        <div class="status-card"><h3>Cancel. Acum. 2025</h3><div class="big" id="cardAcumCancel2025">R$ 0,00</div></div>
+        <div class="status-card"><h3>Cancel. Acum. 2026</h3><div class="big" id="cardAcumCancel2026">R$ 0,00</div></div>
       </div>
     </div>
 
@@ -291,7 +280,7 @@
       ecos_c25_8: '6.160,05', ecos_c25_9: '4.789,13', ecos_c25_10: '10.800,00', ecos_c25_11: '4.707,50',
 
       // VENDAS ECOS 2025
-      ecos_v25_0: '10.887,50', ecos_v25_1: '43.000,00', ecos_v25_2: '7.425,00', ecos_v25_3: '9.750,00',
+      ecos_v25_0: '10.887,50', ecos_v25_1: '430,00', ecos_v25_2: '7.425,00', ecos_v25_3: '9.750,00',
       ecos_v25_4: '7.285,00', ecos_v25_5: '2.920,00', ecos_v25_6: '10.380,00', ecos_v25_7: '9.300,00',
       ecos_v25_8: '7.080,00', ecos_v25_9: '5.716,86', ecos_v25_10: '3.400,00', ecos_v25_11: '1.500,00',
 
@@ -373,7 +362,7 @@
         formData[input.id] = input.value;
       });
       return {
-        versao: '2.9',
+        versao: '3.1',
         formData,
         marcaAtual,
         secoes: {
@@ -505,7 +494,7 @@
         preencherDadosIniciais();
         const snap = await getDoc(doc(db, 'dashboard', 'med-ecos'));
         let payloadBase = {
-          versao: '2.9',
+          versao: '3.1',
           formData: {},
           marcaAtual: 'MED',
           secoes: { med: true, ecos: false }
@@ -514,7 +503,7 @@
         if (snap.exists()) {
           const atual = snap.data() || {};
           payloadBase = {
-            versao: '2.9',
+            versao: '3.1',
             formData: { ...(atual.formData || {}) },
             marcaAtual: atual.marcaAtual || 'MED',
             secoes: atual.secoes || { med: true, ecos: false }
