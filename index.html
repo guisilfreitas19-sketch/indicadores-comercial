@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard Comercial - MED & ECOS | v2.4</title>
+  <title>Dashboard Comercial - MED & ECOS | v2.5</title>
   <style>
     * { box-sizing: border-box; font-family: Arial, sans-serif; }
     body { margin: 0; padding: 20px; background: #f4f6f9; color: #333; }
@@ -53,11 +53,12 @@
     <div class="header">
       <h1>Dashboard Comercial - MED & ECOS</h1>
       <p>Comparativo mensal entre 2025 e 2026 com salvamento em Firebase sem login.</p>
-      <span class="version">Versão 2.4</span>
+      <span class="version">Versão 2.5</span>
     </div>
 
     <div class="actions">
       <button onclick="calcularDashboard()">Atualizar Dashboard</button>
+      <button class="btn-secondary" onclick="resetarDadosFirebase()">Resetar Firebase com padrão MED 2025</button>
     </div>
 
     <div class="status-bar">
@@ -330,7 +331,7 @@
         formData[input.id] = input.value;
       });
       return {
-        versao: '2.4',
+        versao: '2.5',
         formData,
         marcaAtual,
         secoes: {
@@ -450,6 +451,28 @@
     }
     window.carregarFirebase = carregarFirebase;
 
+    async function resetarDadosFirebase() {
+      try {
+        preencherDadosIniciais();
+        document.getElementById('mesSelecionado').value = '0';
+        marcaAtual = 'MED';
+        document.querySelectorAll('.brand-tab').forEach(btn => btn.classList.remove('active'));
+        const botaoMed = Array.from(document.querySelectorAll('.brand-tab')).find(btn => btn.textContent.trim() === 'MED');
+        if (botaoMed) botaoMed.classList.add('active');
+        setSecaoAberta('secaoMED', 'headerSecaoMED', true);
+        setSecaoAberta('secaoECOS', 'headerSecaoECOS', false);
+        calcularDashboard();
+        const dados = coletarDadosFormulario();
+        await setDoc(doc(db, 'dashboard', 'med-ecos'), dados);
+        firebaseLoadedOnce = true;
+        setStatus('Firebase resetado com padrão MED 2025');
+      } catch (error) {
+        console.error(error);
+        setStatus('Erro ao resetar Firebase');
+      }
+    }
+    window.resetarDadosFirebase = resetarDadosFirebase;
+
     function ativarEventosCampos() {
       document.querySelectorAll('input.valor').forEach(input => {
         input.addEventListener('input', (e) => {
@@ -470,15 +493,9 @@
     }
 
     function preencherDadosIniciais() {
-      const cancelamentosMed2025 = [
-        '8.388,78', '14.521,65', '5.923,47', '6.952,96',
-        '11.365,47', '6.861,42', '12.172,26', '9.403,44',
-        '8.302,92', '11.795,20', '12.577,45', '9.324,45'
-      ];
-
-      cancelamentosMed2025.forEach((valor, index) => {
-        const campo = document.getElementById(`med_c25_${index}`);
-        if (campo && !campo.value) {
+      Object.entries(dadosPadrao).forEach(([id, valor]) => {
+        const campo = document.getElementById(id);
+        if (campo) {
           campo.value = valor;
         }
       });
