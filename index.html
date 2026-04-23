@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard Comercial - MED & ECOS | v2.8</title>
+  <title>Dashboard Comercial - MED & ECOS | v2.9</title>
   <style>
     * { box-sizing: border-box; font-family: Arial, sans-serif; }
     body { margin: 0; padding: 20px; background: #f4f6f9; color: #333; }
@@ -60,11 +60,12 @@
     <div class="header">
       <h1>Dashboard Comercial - MED & ECOS</h1>
       <p>Comparativo mensal entre 2025 e 2026 com salvamento em Firebase sem login.</p>
-      <span class="version">Versão 2.8</span>
+      <span class="version">Versão 2.9</span>
     </div>
 
     <div class="actions">
       <button onclick="calcularDashboard()">Atualizar Dashboard</button>
+      <button class="btn-secondary" onclick="forcarRegravacao2025()">Forçar dados 2025 no Firebase</button>
     </div>
 
     <div class="status-bar">
@@ -345,7 +346,7 @@
         formData[input.id] = input.value;
       });
       return {
-        versao: '2.8',
+        versao: '2.9',
         formData,
         marcaAtual,
         secoes: {
@@ -471,6 +472,44 @@
       }
     }
     window.carregarFirebase = carregarFirebase;
+
+    async function forcarRegravacao2025() {
+      try {
+        preencherDadosIniciais();
+        const snap = await getDoc(doc(db, 'dashboard', 'med-ecos'));
+        let payloadBase = {
+          versao: '2.9',
+          formData: {},
+          marcaAtual: 'MED',
+          secoes: { med: true, ecos: false }
+        };
+
+        if (snap.exists()) {
+          const atual = snap.data() || {};
+          payloadBase = {
+            versao: '2.9',
+            formData: { ...(atual.formData || {}) },
+            marcaAtual: atual.marcaAtual || 'MED',
+            secoes: atual.secoes || { med: true, ecos: false }
+          };
+        }
+
+        Object.entries(dadosPadrao).forEach(([id, valor]) => {
+          payloadBase.formData[id] = valor;
+          const campo = document.getElementById(id);
+          if (campo) campo.value = valor;
+        });
+
+        await setDoc(doc(db, 'dashboard', 'med-ecos'), payloadBase);
+        aplicarDadosFormulario(payloadBase);
+        firebaseLoadedOnce = true;
+        setStatus('Dados 2025 forçados no Firebase');
+      } catch (error) {
+        console.error(error);
+        setStatus('Erro ao forçar dados 2025');
+      }
+    }
+    window.forcarRegravacao2025 = forcarRegravacao2025;
 
     
 
