@@ -53,6 +53,29 @@
       background: #fff7ed; border-left: 4px solid #f59e0b; padding: 12px 14px; border-radius: 8px; margin-top: 12px;
       font-size: 14px;
     }
+    .collapsible-header {
+      display: flex; align-items: center; justify-content: space-between; gap: 12px;
+      cursor: pointer; user-select: none; padding: 4px 0;
+    }
+    .collapsible-left {
+      display: flex; align-items: center; gap: 10px;
+    }
+    .toggle-icon {
+      width: 28px; height: 28px; border-radius: 999px; display: inline-flex; align-items: center; justify-content: center;
+      background: #eef3ff; color: #1f3c88; font-weight: 700; transition: transform .2s ease;
+      border: 1px solid #dbe5ff;
+    }
+    .collapsible-header.open .toggle-icon { transform: rotate(90deg); }
+    .collapsible-content {
+      overflow: hidden; transition: max-height .25s ease, opacity .2s ease, margin-top .2s ease;
+      max-height: 0; opacity: 0; margin-top: 0;
+    }
+    .collapsible-content.open {
+      max-height: 2000px; opacity: 1; margin-top: 12px;
+    }
+    .tag-mini {
+      font-size: 12px; color: #5b6b8c; background: #f8faff; border: 1px solid #dbe5ff; border-radius: 999px; padding: 6px 10px;
+    }
     @media (max-width: 768px) { input[type="number"] { width: 88px; } }
   </style>
 </head>
@@ -142,7 +165,15 @@
       <div class="hint" id="insightMensal">Selecione o mês e preencha os dados para ver o comparativo mensal.</div>
     </div>
 
-    <div class="section" id="secaoMED">
+    <div class="section">
+      <div id="headerSecaoMED" class="collapsible-header" onclick="toggleSecao('secaoMED','headerSecaoMED')">
+        <div class="collapsible-left">
+          <span class="toggle-icon">▶</span>
+          <h2 style="margin:0;">Base de Dados - MED</h2>
+        </div>
+        <span class="tag-mini">clique para abrir/fechar</span>
+      </div>
+      <div id="secaoMED" class="collapsible-content">
       <h2>Base de Dados - MED</h2>
       <p class="small">Você pode preencher 2025 inteiro como base histórica e ir comparando com 2026 por mês.</p>
       <div class="table-wrapper">
@@ -165,7 +196,15 @@
       </div>
     </div>
 
-    <div class="section hidden" id="secaoECOS">
+    <div class="section">
+      <div id="headerSecaoECOS" class="collapsible-header" onclick="toggleSecao('secaoECOS','headerSecaoECOS')">
+        <div class="collapsible-left">
+          <span class="toggle-icon">▶</span>
+          <h2 style="margin:0;">Base de Dados - ECOS</h2>
+        </div>
+        <span class="tag-mini">clique para abrir/fechar</span>
+      </div>
+      <div id="secaoECOS" class="collapsible-content">
       <h2>Base de Dados - ECOS</h2>
       <p class="small">Mesma lógica da MED, com comparativo mês a mês entre 2025 e 2026.</p>
       <div class="table-wrapper">
@@ -274,6 +313,8 @@
       const dados = {};
       inputs.forEach(input => dados[input.id] = input.value);
       dados.marcaAtual = marcaAtual;
+      dados.secaoMEDAberta = document.getElementById('secaoMED').classList.contains('open');
+      dados.secaoECOSAberta = document.getElementById('secaoECOS').classList.contains('open');
       localStorage.setItem('dashboard_med_ecos_mensal', JSON.stringify(dados));
       document.getElementById('statusSalvamento').textContent = 'Dados salvos no navegador';
     }
@@ -293,9 +334,10 @@
         document.querySelectorAll('.brand-tab').forEach(btn => btn.classList.remove('active'));
         const alvo = Array.from(document.querySelectorAll('.brand-tab')).find(btn => btn.textContent.trim() === marcaAtual);
         if (alvo) alvo.classList.add('active');
-        document.getElementById('secaoMED').classList.toggle('hidden', marcaAtual !== 'MED');
-        document.getElementById('secaoECOS').classList.toggle('hidden', marcaAtual !== 'ECOS');
       }
+
+      setSecaoAberta('secaoMED', 'headerSecaoMED', !!dados.secaoMEDAberta);
+      setSecaoAberta('secaoECOS', 'headerSecaoECOS', !!dados.secaoECOSAberta);
     }
 
     function limparDadosDoNavegador() {
@@ -325,8 +367,15 @@
       marcaAtual = marca;
       document.querySelectorAll('.brand-tab').forEach(btn => btn.classList.remove('active'));
       botao.classList.add('active');
-      document.getElementById('secaoMED').classList.toggle('hidden', marca !== 'MED');
-      document.getElementById('secaoECOS').classList.toggle('hidden', marca !== 'ECOS');
+
+      if (marca === 'MED') {
+        setSecaoAberta('secaoMED', 'headerSecaoMED', true);
+        setSecaoAberta('secaoECOS', 'headerSecaoECOS', false);
+      } else {
+        setSecaoAberta('secaoECOS', 'headerSecaoECOS', true);
+        setSecaoAberta('secaoMED', 'headerSecaoMED', false);
+      }
+
       salvarDadosNoNavegador();
       calcularDashboard();
     }
@@ -381,8 +430,26 @@
       salvarDadosNoNavegador();
     }
 
+    function setSecaoAberta(id, headerId, aberta) {
+      const el = document.getElementById(id);
+      const header = document.getElementById(headerId);
+      el.classList.toggle('open', aberta);
+      header.classList.toggle('open', aberta);
+    }
+
+    function toggleSecao(id, headerId) {
+      const el = document.getElementById(id);
+      const header = document.getElementById(headerId);
+      const aberta = !el.classList.contains('open');
+      el.classList.toggle('open', aberta);
+      header.classList.toggle('open', aberta);
+      salvarDadosNoNavegador();
+    }
+
     criarTabela('tabelaMED', 'med');
     criarTabela('tabelaECOS', 'ecos');
+    setSecaoAberta('secaoMED', 'headerSecaoMED', false);
+    setSecaoAberta('secaoECOS', 'headerSecaoECOS', false);
     carregarDadosDoNavegador();
     ativarAutoSave();
     calcularDashboard();
