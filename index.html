@@ -18,7 +18,9 @@
   .version{margin-left:12px;padding:4px 8px;border-radius:999px;background:rgba(255,255,255,.18);font-size:11px;font-weight:700}
 
   /* esconder elementos que poluem, sem remover funcionalidade */
-  .actions{display:none}
+  /* actions visível para permitir seleção de mês */
+  .actions{display:flex;gap:10px;align-items:center}
+  /* status oculto visualmente mas funcional */
   #statusSalvamento{display:none}
 
   .section{background:var(--card);border-radius:16px;padding:16px 16px;margin:12px 0;box-shadow:0 8px 20px rgba(2,6,23,.06)}
@@ -48,7 +50,26 @@
 
   input[type="text"]{padding:8px;border:1px solid var(--border);border-radius:10px}
   input.valor{width:110px;text-align:right}
-  input.travado-2025{background:#eef2f7;color:#475569;border-color:#e2e8f0;cursor:not-allowed;font-weight:700}
+    input.valor:not(.travado-2025){
+      background:#f7fbff;
+      border-color:#cfe0ff;
+      color:#0f172a;
+      box-shadow:0 0 0 2px rgba(41,82,179,.03);
+    }
+    input.valor:not(.travado-2025):focus{
+      outline:none;
+      border-color:#7aa2ff;
+      box-shadow:0 0 0 3px rgba(41,82,179,.12);
+      background:#ffffff;
+    }
+  input.travado-2025{
+      background:#e9eef5;
+      color:#7a8798;
+      border-color:#d7dee8;
+      cursor:not-allowed;
+      font-weight:700;
+      box-shadow:none;
+    }
 
   .collapsible-header{display:flex;align-items:center;justify-content:space-between;gap:10px;cursor:pointer;padding:4px 2px}
   .collapsible-left{display:flex;align-items:center;gap:8px}
@@ -253,10 +274,7 @@
       });
     }
 
-    function setStatus(msg) {
-      const statusEl = document.getElementById('statusSalvamento');
-      if (statusEl) statusEl.textContent = msg;
-    }
+    function setStatus(msg) { /* oculto: mantido sem UI */ }
 
     let autoSaveTimer = null;
     let firebaseLoadedOnce = false;
