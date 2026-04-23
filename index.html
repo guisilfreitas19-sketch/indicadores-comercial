@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PACS v2.9 | BI Dashboard</title>
+  <title>PACS v3.0 | Estável</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
@@ -29,17 +29,13 @@
     .card-stat .value { font-size: 26px; font-weight: 800; margin: 5px 0; }
     .variation { font-size: 14px; font-weight: 800; }
     
-    .alerta-churn { border-color: var(--bad) !important; animation: pulse 2s infinite; }
-    @keyframes pulse { 0%, 100% { background: #fff; } 50% { background: #fff5f5; } }
-
     .charts-container { display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px; margin-bottom: 25px; }
     .chart-card { background: var(--card); padding: 20px; border-radius: 20px; box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.08); height: 350px; }
     .chart-card h3 { margin: 0 0 15px 0; font-size: 14px; color: var(--muted); text-transform: uppercase; }
 
     .collapsible-section { background: var(--card); border-radius: 20px; box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.08); }
     .trigger { padding: 20px; display: flex; justify-content: space-between; cursor: pointer; align-items: center; }
-    .content { display: none; padding: 0 20px 20px; overflow-x: auto; }
-    .active .content { display: block; }
+    .content { display: block; padding: 0 20px 20px; overflow-x: auto; }
     
     table { width: 100%; border-collapse: collapse; min-width: 800px; }
     th { padding: 12px; color: var(--muted); font-size: 11px; text-transform: uppercase; border-bottom: 1px solid var(--border); }
@@ -55,7 +51,7 @@
 <div class="container">
   <div class="header">
     <div class="header-info">
-      <h1>PACS v2.9 <span id="statusBadge">CARREGANDO...</span></h1>
+      <h1>PACS v3.0 <span id="statusBadge" style="background: #a3aed0;">CARREGANDO...</span></h1>
       <p>Performance: <span id="labelFoco">MED</span> | <span id="labelMes">...</span></p>
     </div>
     <div style="display: flex; gap: 15px;">
@@ -99,10 +95,9 @@
     </div>
   </div>
 
-  <div id="secaoDados" class="collapsible-section">
-    <div class="trigger" onclick="this.parentElement.classList.toggle('active')">
+  <div class="collapsible-section">
+    <div class="trigger">
       <h2 style="margin:0; font-size:18px;">📊 Base de Dados</h2>
-      <span id="seta">▼</span>
     </div>
     <div class="content">
       <table>
@@ -138,49 +133,55 @@
   let marca = 'MED';
   let dados26 = { MED: {}, ECOS: {} };
   let vChart, cChart;
+  let isReady = false; // TRAVA DE SEGURANÇA
 
   const sel = document.getElementById('mesSelecionado');
   meses.forEach((m, i) => sel.add(new Option(m, i)));
   sel.value = 3;
 
   function initCharts() {
-    const commonOpts = { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'bottom', labels: { font: { weight: 'bold' } } } } };
-    
+    const commonOpts = { responsive: true, maintainAspectRatio: false, animation: false, plugins: { legend: { position: 'bottom' } } };
     vChart = new Chart(document.getElementById('chartVendas'), {
       type: 'bar',
       data: { labels: meses.map(m => m.substring(0,3)), datasets: [
-        { label: '2025', data: [], backgroundColor: '#e9edf7', borderRadius: 5 },
-        { label: '2026', data: [], backgroundColor: '#1e40af', borderRadius: 5 }
+        { label: '2025', data: [], backgroundColor: '#e9edf7' },
+        { label: '2026', data: [], backgroundColor: '#1e40af' }
       ]},
       options: commonOpts
     });
-
     cChart = new Chart(document.getElementById('chartChurn'), {
       type: 'line',
-      data: { labels: meses.map(m => m.substring(0,3)), datasets: [{ label: 'Churn %', data: [], borderColor: '#ee5d50', tension: 0.4, fill: true, backgroundColor: 'rgba(238, 93, 80, 0.05)', pointRadius: 5 }]},
+      data: { labels: meses.map(m => m.substring(0,3)), datasets: [{ label: 'Churn %', data: [], borderColor: '#ee5d50', tension: 0.4 }]},
       options: commonOpts
     });
   }
 
   window.toggleMarca = (m) => {
-    salvarMemoria(); marca = m;
+    if(!isReady) return;
+    salvarMemoria();
+    marca = m;
     document.getElementById('btnMED').classList.toggle('active', m === 'MED');
     document.getElementById('btnECOS').classList.toggle('active', m === 'ECOS');
     document.getElementById('labelFoco').textContent = m;
-    renderTabela(); atualizarTudo();
+    renderTabela();
+    atualizarTudo();
   };
 
   function salvarMemoria() {
+    if(!isReady) return;
     meses.forEach((_, i) => {
-      dados26[marca][`v_${i}`] = document.getElementById(`v26_${i}`)?.value || '';
-      dados26[marca][`c_${i}`] = document.getElementById(`c26_${i}`)?.value || '';
+      const vVal = document.getElementById(`v26_${i}`)?.value || '';
+      const cVal = document.getElementById(`c26_${i}`)?.value || '';
+      dados26[marca][`v_${i}`] = vVal;
+      dados26[marca][`c_${i}`] = cVal;
     });
   }
 
   window.maskMoney = (i) => {
     let v = i.value.replace(/\D/g, '');
     v = (v / 100).toFixed(2).replace(".", ",").replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1.");
-    i.value = v; atualizarTudo();
+    i.value = v; 
+    atualizarTudo();
   };
 
   function renderTabela() {
@@ -202,6 +203,7 @@
   }
 
   window.atualizarTudo = () => {
+    if(!isReady) return;
     salvarMemoria();
     const midx = parseInt(sel.value);
     document.getElementById('labelMes').textContent = meses[midx];
@@ -228,29 +230,36 @@
       if(i === midx) {
         document.getElementById('valVenda26').textContent = 'R$ ' + v26.toLocaleString('pt-BR', {minimumFractionDigits:2});
         document.getElementById('varVendaMes').textContent = (varPct >= 0 ? '+':'') + varPct + '% vs 2025';
-        document.getElementById('varVendaMes').className = 'variation ' + (varPct >= 0 ? 'positivo':'negativo');
         document.getElementById('valCancel26').textContent = 'R$ ' + c26.toLocaleString('pt-BR', {minimumFractionDigits:2});
         const cVar = c25 > 0 ? ((c26-c25)/c25*100).toFixed(1) : 0;
         document.getElementById('varCancelMes').textContent = (cVar >= 0 ? '+':'') + cVar + '% vs 2025';
-        document.getElementById('varCancelMes').className = 'variation ' + (cVar <= 0 ? 'positivo':'negativo');
         
-        document.getElementById('cardCancel').className = churn > 15 ? 'card-stat alerta-churn' : 'card-stat';
-        document.getElementById('statusBadge').textContent = churn > 15 ? 'ATENÇÃO CHURN' : 'SAUDÁVEL';
-        document.getElementById('statusBadge').style.background = churn > 15 ? 'var(--bad)' : 'var(--good)';
+        const badge = document.getElementById('statusBadge');
+        if (churn > 15) { badge.textContent = 'ATENÇÃO CHURN'; badge.style.background = 'var(--bad)'; } 
+        else { badge.textContent = 'SAUDÁVEL'; badge.style.background = 'var(--good)'; }
       }
     });
 
     document.getElementById('valVendaAcum26').textContent = 'R$ ' + acV26.toLocaleString('pt-BR', {minimumFractionDigits:2});
     document.getElementById('valChurnMedio').textContent = (chCount > 0 ? (chSum/chCount).toFixed(1) : 0) + '%';
     
-    if(vChart) { vChart.data.datasets[0].data = chartV25; vChart.data.datasets[1].data = chartV26; vChart.update('none'); }
-    if(cChart) { cChart.data.datasets[0].data = chartChurn; cChart.update('none'); }
+    if(vChart) { vChart.data.datasets[0].data = chartV25; vChart.data.datasets[1].data = chartV26; vChart.update(); }
+    if(cChart) { cChart.data.datasets[0].data = chartChurn; cChart.update(); }
     
-    clearTimeout(window.saveTimer);
-    window.saveTimer = setTimeout(async () => {
-      await setDoc(doc(db, 'dashboard', 'pacs_v2'), { ...dados26, config: { marca, mes: sel.value } });
-    }, 1500);
-  };
+    agendarSalvamento();
+  }
+
+  let saveTimer;
+  function agendarSalvamento() {
+    if(!isReady) return;
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(async () => {
+      try {
+        await setDoc(doc(db, 'dashboard', 'pacs_v2'), { ...dados26, config: { marca, mes: sel.value } });
+        console.log("Salvo com sucesso!");
+      } catch (e) { console.error("Erro ao salvar:", e); }
+    }, 2000);
+  }
 
   async function load() {
     initCharts();
@@ -258,11 +267,16 @@
       const snap = await getDoc(doc(db, 'dashboard', 'pacs_v2'));
       if(snap.exists()) {
         const d = snap.data();
-        dados26.MED = d.MED || {}; dados26.ECOS = d.ECOS || {};
+        dados26.MED = d.MED || {};
+        dados26.ECOS = d.ECOS || {};
         if(d.config) { marca = d.config.marca || 'MED'; sel.value = d.config.mes || 3; }
       }
-    } catch(e) { console.error("Erro Firebase:", e); }
-    toggleMarca(marca);
+      isReady = true; // SÓ LIBERA O SISTEMA APÓS CARREGAR
+      toggleMarca(marca);
+    } catch(e) { 
+      console.error("Erro Firebase:", e);
+      document.getElementById('statusBadge').textContent = 'ERRO CONEXÃO';
+    }
   }
   load();
 </script>
