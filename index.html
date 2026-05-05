@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>PACS v3.3 | Professional Dashboard</title>
+  <title>PACS v3.4 | Dashboard Inteligente</title>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
@@ -16,23 +16,17 @@
     body { margin: 0; padding: 20px; background-color: var(--bg); color: var(--text); }
     .container { max-width: 1600px; margin: 0 auto; }
     
-    /* Header & Filters */
     .header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; }
-    .header-info h1 { margin: 0; font-size: 28px; font-weight: 800; letter-spacing: -0.5px; }
+    .header-info h1 { margin: 0; font-size: 28px; font-weight: 800; }
     #statusBadge { padding: 4px 12px; border-radius: 20px; font-size: 11px; margin-left: 10px; text-transform: uppercase; color: white; font-weight: 800; transition: 0.3s; }
     
     .brand-selector { background: #e9edf7; padding: 5px; border-radius: 12px; display: flex; gap: 5px; }
     .brand-btn { padding: 8px 20px; border: none; border-radius: 10px; cursor: pointer; font-weight: 700; color: var(--primary); background: transparent; transition: 0.3s; }
     .brand-btn.active { background: #fff; box-shadow: 0px 4px 14px rgba(0,0,0,0.05); }
-    select { padding: 10px; border-radius: 12px; border: 1px solid var(--border); font-weight: 700; cursor: pointer; color: var(--text); outline: none; }
+    select { padding: 10px; border-radius: 12px; border: 1px solid var(--border); font-weight: 700; cursor: pointer; }
 
-    /* Stats Cards com Hierarquia Lateral */
     .grid-stats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 25px; }
-    .card-stat { 
-      background: var(--card); padding: 20px; border-radius: 20px; 
-      box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.12); 
-      border-left: 5px solid transparent; /* Hierarquia Visual */
-    }
+    .card-stat { background: var(--card); padding: 20px; border-radius: 20px; box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.12); border-left: 5px solid transparent; }
     .card-venda { border-left-color: var(--primary); }
     .card-canc { border-left-color: var(--bad); }
     .card-acum { border-left-color: var(--good); }
@@ -41,30 +35,20 @@
     .card-stat .value { font-size: 26px; font-weight: 800; margin: 5px 0; }
     .variation { font-size: 13px; font-weight: 800; display: flex; align-items: center; gap: 4px; }
     
-    /* Charts */
     .charts-container { display: grid; grid-template-columns: 1.5fr 1fr; gap: 20px; margin-bottom: 25px; }
     .chart-card { background: var(--card); padding: 20px; border-radius: 20px; box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.08); height: 350px; }
-    .chart-card h3 { margin: 0 0 15px 0; font-size: 14px; color: var(--muted); text-transform: uppercase; letter-spacing: 1px; }
+    .chart-card h3 { margin: 0 0 15px 0; font-size: 14px; color: var(--muted); text-transform: uppercase; }
 
-    /* Table & Inputs */
     .collapsible-section { background: var(--card); border-radius: 20px; box-shadow: 0px 18px 40px rgba(112, 144, 176, 0.08); overflow: hidden; }
     .trigger { padding: 20px; display: flex; justify-content: space-between; cursor: pointer; align-items: center; border-bottom: 1px solid var(--border); }
     .content { padding: 20px; overflow-x: auto; }
     
     table { width: 100%; border-collapse: collapse; min-width: 800px; }
-    th { padding: 12px; color: var(--muted); font-size: 11px; text-transform: uppercase; border-bottom: 1px solid var(--border); text-align: center; }
+    th { padding: 12px; color: var(--muted); font-size: 11px; text-transform: uppercase; border-bottom: 1px solid var(--border); }
     td { padding: 12px; border-bottom: 1px solid var(--border); text-align: center; font-weight: 600; font-size: 14px; }
     
-    input.valor { 
-      width: 125px; padding: 8px; border: 1px solid var(--border); border-radius: 8px; 
-      text-align: right; font-weight: 700; color: var(--text); background: #f9fbfd; 
-      transition: all 0.2s ease;
-    }
-    /* Feedback Visual de Foco */
-    input.valor:focus { 
-      border-color: var(--primary); outline: none; background: #fff; 
-      box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1); 
-    }
+    input.valor { width: 125px; padding: 8px; border: 1px solid var(--border); border-radius: 8px; text-align: right; font-weight: 700; color: var(--text); background: #f9fbfd; transition: 0.2s; }
+    input.valor:focus { border-color: var(--primary); outline: none; background: #fff; box-shadow: 0 0 0 3px rgba(30, 64, 175, 0.1); }
 
     .positivo { color: var(--good); } .negativo { color: var(--bad); }
     tbody tr:hover { background-color: #f8faff; transition: 0.2s; }
@@ -75,11 +59,8 @@
 <div class="container">
   <div class="header">
     <div class="header-info">
-      <h1>PACS v3.3 <span id="statusBadge">CONECTADO</span></h1>
-      <p style="margin: 5px 0 0 0; color: var(--muted); font-weight: 600;">
-        Foco: <span id="labelFoco" style="color: var(--primary)">MED</span> | 
-        Período: <span id="labelMes">Janeiro</span>
-      </p>
+      <h1>PACS v3.4 <span id="statusBadge">CONECTADO</span></h1>
+      <p style="margin:5px 0 0 0; font-weight:600; color:var(--muted)">Marca: <span id="labelFoco" style="color:var(--primary)">MED</span> | <span id="labelMes">...</span></p>
     </div>
     <div style="display: flex; gap: 15px;">
       <div class="brand-selector">
@@ -92,41 +73,39 @@
 
   <div class="grid-stats">
     <div class="card-stat card-venda">
-      <span style="font-size:11px; color:var(--muted); font-weight:700; text-transform: uppercase;">Venda no Mês</span>
+      <span style="font-size:11px; color:var(--muted); font-weight:700">VENDA NO MÊS</span>
       <div class="value" id="valVenda26">R$ 0,00</div>
       <div class="variation" id="varVendaMes">0%</div>
     </div>
     <div class="card-stat card-canc">
-      <span style="font-size:11px; color:var(--muted); font-weight:700; text-transform: uppercase;">Cancelamentos</span>
+      <span style="font-size:11px; color:var(--muted); font-weight:700">CANCELAMENTOS</span>
       <div class="value" id="valCancel26">R$ 0,00</div>
       <div class="variation" id="varCancelMes">0%</div>
     </div>
     <div class="card-stat card-acum">
-      <span style="font-size:11px; color:var(--muted); font-weight:700; text-transform: uppercase;">Faturamento Acumulado</span>
+      <span style="font-size:11px; color:var(--muted); font-weight:700">VENDA ACUMULADA 2026</span>
       <div class="value" id="valVendaAcum26" style="color:var(--primary)">R$ 0,00</div>
-      <div style="font-size: 11px; color: var(--muted); font-weight: 600;">Total YTD</div>
     </div>
     <div class="card-stat card-churn">
-      <span style="font-size:11px; color:var(--muted); font-weight:700; text-transform: uppercase;">Var. Canc. Média</span>
+      <span style="font-size:11px; color:var(--muted); font-weight:700">TENDÊNCIA CANC. MÉDIA</span>
       <div class="value" id="valChurnMedio">0%</div>
-      <div style="font-size: 11px; color: var(--muted); font-weight: 600;">Média jan-atual</div>
     </div>
   </div>
 
   <div class="charts-container">
     <div class="chart-card">
-      <h3>Comparativo de Vendas (2025 vs 2026)</h3>
+      <h3>Vendas: 2025 (Cinza) vs 2026 (Azul)</h3>
       <canvas id="chartVendas"></canvas>
     </div>
     <div class="chart-card">
-      <h3>Variação de Cancelamento % (vs 2025)</h3>
+      <h3>Curva de Cancelamento % (vs 2025)</h3>
       <canvas id="chartChurn"></canvas>
     </div>
   </div>
 
   <div class="collapsible-section">
     <div class="trigger" onclick="toggleTabela()">
-      <h2 style="margin:0; font-size:16px; font-weight: 800;">📊 BASE DE DADOS <span style="font-weight: 400; color: var(--muted); font-size: 12px; margin-left: 10px;">(Clique para expandir/recolher)</span></h2>
+      <h2 style="margin:0; font-size:16px; font-weight:800">📊 LANÇAMENTO DE DADOS</h2>
       <span id="setaIcon" style="font-size: 18px; transition: 0.3s;">▼</span>
     </div>
     <div class="content" id="tabelaConteudo">
@@ -138,8 +117,8 @@
                 <th>Venda 26</th>
                 <th>Canc. 25</th>
                 <th>Canc. 26</th>
-                <th>Crescimento</th>
-                <th>Var. Canc.</th>
+                <th>Venda Var.</th>
+                <th>Canc. Var.</th>
             </tr>
         </thead>
         <tbody id="tabelaCorpo"></tbody>
@@ -166,14 +145,8 @@
 
   const meses = ['Janeiro','Fevereiro','Março','Abril','Maio','Junho','Julho','Agosto','Setembro','Outubro','Novembro','Dezembro'];
   const dados25 = {
-    MED: { 
-        v: [7698.73, 7384.1, 7319.21, 6889.7, 6787.88, 6555.33, 6120.57, 7382.24, 7722.42, 9290, 7539.89, 1630], 
-        c: [8388.78, 14521.65, 5923.47, 6952.96, 11365.47, 6861.42, 12172.26, 9403.44, 8302.92, 11795.2, 12577.45, 9324.45] 
-    },
-    ECOS: { 
-        v: [10887.5, 430, 7425, 9750, 7285, 2920, 10380, 9300, 7080, 5716.86, 3400, 1500], 
-        c: [1800, 4352.68, 4415.34, 2095.42, 3774.83, 4452.77, 8607.01, 8326.79, 6160.05, 4789.13, 10800, 4707.5] 
-    }
+    MED: { v: [7698.73, 7384.1, 7319.21, 6889.7, 6787.88, 6555.33, 6120.57, 7382.24, 7722.42, 9290, 7539.89, 1630], c: [8388.78, 14521.65, 5923.47, 6952.96, 11365.47, 6861.42, 12172.26, 9403.44, 8302.92, 11795.2, 12577.45, 9324.45] },
+    ECOS: { v: [10887.5, 430, 7425, 9750, 7285, 2920, 10380, 9300, 7080, 5716.86, 3400, 1500], c: [1800, 4352.68, 4415.34, 2095.42, 3774.83, 4452.77, 8607.01, 8326.79, 6160.05, 4789.13, 10800, 4707.5] }
   };
 
   let marca = 'MED';
@@ -182,25 +155,21 @@
 
   const sel = document.getElementById('mesSelecionado');
   meses.forEach((m, i) => sel.add(new Option(m, i)));
-  sel.value = new Date().getMonth(); // Default para o mês atual
+  sel.value = 4; // Maio
 
   function initCharts() {
-    const commonOpts = { 
-        responsive: true, 
-        maintainAspectRatio: false, 
-        plugins: { legend: { position: 'top', labels: { usePointStyle: true, boxWidth: 6, font: { weight: 700 } } } } 
-    };
+    const commonOpts = { responsive: true, maintainAspectRatio: false, plugins: { legend: { position: 'top' } }, scales: { y: { beginAtZero: true } } };
     vChart = new Chart(document.getElementById('chartVendas'), {
       type: 'bar',
       data: { labels: meses.map(m => m.substring(0,3)), datasets: [
-        { label: '2025', data: [], backgroundColor: '#e9edf7', borderRadius: 5 },
-        { label: '2026', data: [], backgroundColor: '#1e40af', borderRadius: 5 }
+        { label: '2025', data: [], backgroundColor: '#e9edf7', borderRadius: 4 },
+        { label: '2026', data: [], backgroundColor: '#1e40af', borderRadius: 4 }
       ]},
       options: commonOpts
     });
     cChart = new Chart(document.getElementById('chartChurn'), {
       type: 'line',
-      data: { labels: meses.map(m => m.substring(0,3)), datasets: [{ label: 'Var. Canc. %', data: [], borderColor: '#ee5d50', backgroundColor: '#ee5d50', tension: 0.4, borderWidth: 3, pointRadius: 5 }]},
+      data: { labels: meses.map(m => m.substring(0,3)), datasets: [{ label: 'Variação Canc. %', data: [], borderColor: '#ee5d50', tension: 0.3, pointRadius: 5, fill: false }]},
       options: commonOpts
     });
   }
@@ -241,13 +210,11 @@
     const corpo = document.getElementById('tabelaCorpo');
     corpo.innerHTML = '';
     meses.forEach((m, i) => {
-      const v25 = dados25[marca].v[i];
-      const c25 = dados25[marca].c[i];
       corpo.innerHTML += `<tr>
         <td><b>${m}</b></td>
-        <td style="color: var(--muted)">R$ ${v25.toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
+        <td>R$ ${dados25[marca].v[i].toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
         <td><input class="valor" id="v26_${i}" oninput="maskMoney(this)" value="${dados26[marca][`v_${i}`] || ''}"></td>
-        <td style="color: var(--muted)">R$ ${c25.toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
+        <td>R$ ${dados25[marca].c[i].toLocaleString('pt-BR', {minimumFractionDigits:2})}</td>
         <td><input class="valor" id="c26_${i}" oninput="maskMoney(this)" value="${dados26[marca][`c_${i}`] || ''}"></td>
         <td id="rowVar_${i}">0%</td><td id="rowCh_${i}">0%</td>
       </tr>`;
@@ -263,6 +230,7 @@
     salvarMemoriaLocal();
     const midx = parseInt(sel.value);
     document.getElementById('labelMes').textContent = meses[midx];
+    
     let acV26 = 0, vcSum = 0, vcCount = 0;
     let chartV25 = [], chartV26 = [], chartVarCanc = [];
 
@@ -275,56 +243,44 @@
       const varVendaPct = v25 > 0 ? ((v26 - v25) / v25 * 100).toFixed(1) : 0;
       const varCancelPct = c25 > 0 ? ((c26 - c25) / c25 * 100).toFixed(1) : 0;
 
-      // Atualiza células da tabela com ícones
-      const cellVenda = document.getElementById(`rowVar_${i}`);
-      cellVenda.innerHTML = `${parseFloat(varVendaPct) >= 0 ? '↑':'↓'} ${Math.abs(varVendaPct)}%`;
-      cellVenda.className = parseFloat(varVendaPct) >= 0 ? 'positivo' : 'negativo';
+      document.getElementById(`rowVar_${i}`).innerHTML = `${parseFloat(varVendaPct) >= 0 ? '▲':'▼'} ${Math.abs(varVendaPct)}%`;
+      document.getElementById(`rowVar_${i}`).className = parseFloat(varVendaPct) >= 0 ? 'positivo' : 'negativo';
+      document.getElementById(`rowCh_${i}`).innerHTML = `${parseFloat(varCancelPct) > 0 ? '▲':'▼'} ${Math.abs(varCancelPct)}%`;
+      document.getElementById(`rowCh_${i}`).className = parseFloat(varCancelPct) <= 0 ? 'positivo' : 'negativo';
 
-      const cellCanc = document.getElementById(`rowCh_${i}`);
-      cellCanc.innerHTML = `${parseFloat(varCancelPct) > 0 ? '↑':'↓'} ${Math.abs(varCancelPct)}%`;
-      cellCanc.className = parseFloat(varCancelPct) <= 0 ? 'positivo' : 'negativo';
-
-      // Dados para o gráfico (Ajuste de meses futuros)
+      // --- LOGICA DE ESCONDER MESES FUTUROS NOS GRAFICOS ---
       chartV25.push(v25);
-      // Se o mês for maior que o selecionado e não tiver valor, não mostra no gráfico
-      if (i <= midx || v26 > 0) {
-        chartV26.push(v26);
-        chartVarCanc.push(varCancelPct);
+      if (i <= midx) {
+         chartV26.push(v26);
+         chartVarCanc.push(varCancelPct);
+         acV26 += v26;
+         vcSum += parseFloat(varCancelPct);
+         vcCount++;
       } else {
-        chartV26.push(null);
-        chartVarCanc.push(null);
-      }
-
-      if(i <= midx) { 
-          acV26 += v26; 
-          if(v26 > 0 || c26 > 0) { vcSum += parseFloat(varCancelPct); vcCount++; } 
+         // Meses após o filtro ficam nulos (ChartJS esconde o ponto/barra)
+         chartV26.push(null);
+         chartVarCanc.push(null);
       }
 
       if(i === midx) {
         document.getElementById('valVenda26').textContent = 'R$ ' + v26.toLocaleString('pt-BR', {minimumFractionDigits:2});
-        document.getElementById('varVendaMes').innerHTML = `<span style="color:${parseFloat(varVendaPct)>=0?'var(--good)':'var(--bad)'}">${parseFloat(varVendaPct)>=0?'▲':'▼'} ${Math.abs(varVendaPct)}%</span> vs 2025`;
-        
+        document.getElementById('varVendaMes').innerHTML = `<span style="color:${parseFloat(varVendaPct)>=0?'var(--good)':'var(--bad)'}">${parseFloat(varVendaPct)>=0?'▲':'▼'} ${Math.abs(varVendaPct)}%</span>`;
         document.getElementById('valCancel26').textContent = 'R$ ' + c26.toLocaleString('pt-BR', {minimumFractionDigits:2});
-        document.getElementById('varCancelMes').innerHTML = `<span style="color:${parseFloat(varCancelPct)<=0?'var(--good)':'var(--bad)'}">${parseFloat(varCancelPct)>0?'▲':'▼'} ${Math.abs(varCancelPct)}%</span> vs 2025`;
-        
-        const badge = document.getElementById('statusBadge');
-        if (parseFloat(varCancelPct) > 5) { 
-            badge.textContent = 'CRÍTICO'; badge.style.background = 'var(--bad)'; 
-        } else if (parseFloat(varCancelPct) > 0) {
-            badge.textContent = 'ALERTA'; badge.style.background = 'var(--warn)';
-        } else { 
-            badge.textContent = 'SAUDÁVEL'; badge.style.background = 'var(--good)'; 
-        }
+        document.getElementById('varCancelMes').innerHTML = `<span style="color:${parseFloat(varCancelPct)<=0?'var(--good)':'var(--bad)'}">${parseFloat(varCancelPct)>0?'▲':'▼'} ${Math.abs(varCancelPct)}%</span>`;
       }
     });
 
     document.getElementById('valVendaAcum26').textContent = 'R$ ' + acV26.toLocaleString('pt-BR', {minimumFractionDigits:2});
-    const churnMedio = vcCount > 0 ? (vcSum/vcCount).toFixed(1) : 0;
-    document.getElementById('valChurnMedio').textContent = (churnMedio > 0 ? '+' : '') + churnMedio + '%';
-    document.getElementById('valChurnMedio').style.color = churnMedio <= 0 ? 'var(--good)' : 'var(--bad)';
-    
-    if(vChart) { vChart.data.datasets[0].data = chartV25; vChart.data.datasets[1].data = chartV26; vChart.update(); }
-    if(cChart) { cChart.data.datasets[0].data = chartVarCanc; cChart.update(); }
+    const cMedio = (vcSum/vcCount).toFixed(1);
+    document.getElementById('valChurnMedio').textContent = (cMedio > 0 ? '+': '') + cMedio + '%';
+    document.getElementById('valChurnMedio').style.color = cMedio <= 0 ? 'var(--good)' : 'var(--bad)';
+
+    vChart.data.datasets[0].data = chartV25;
+    vChart.data.datasets[1].data = chartV26;
+    vChart.update();
+
+    cChart.data.datasets[0].data = chartVarCanc;
+    cChart.update();
     
     agendarSalvamento();
   }
@@ -335,7 +291,7 @@
     saveTimer = setTimeout(async () => {
       try {
         await setDoc(doc(db, 'dashboard', 'pacs_v2'), { ...dados26, config: { marca, mes: sel.value } });
-      } catch (e) { console.error("Erro ao salvar:", e); }
+      } catch (e) {}
     }, 1500);
   }
 
@@ -347,11 +303,11 @@
         const d = snap.data();
         if(d.MED) dados26.MED = d.MED;
         if(d.ECOS) dados26.ECOS = d.ECOS;
-        if(d.config) { marca = d.config.marca || 'MED'; sel.value = d.config.mes || new Date().getMonth(); }
+        if(d.config) { marca = d.config.marca || 'MED'; sel.value = d.config.mes || 4; }
       }
       renderTabela();
       atualizarTudo();
-    } catch(e) { console.error("Erro Firebase:", e); }
+    } catch(e) {}
   }
   load();
 </script>
